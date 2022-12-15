@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\API\\API.csproj": {}
+    "C:\\VS Projects\\Lichva\\Lich_va\\API\\API.csproj": {}
   },
   "projects": {
-    "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\API\\API.csproj": {
+    "C:\\VS Projects\\Lichva\\Lich_va\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\API\\API.csproj",
+        "projectUniqueName": "C:\\VS Projects\\Lichva\\Lich_va\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\API\\API.csproj",
-        "packagesPath": "C:\\Users\\waxer\\.nuget\\packages\\",
-        "outputPath": "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\API\\obj\\",
+        "projectPath": "C:\\VS Projects\\Lichva\\Lich_va\\API\\API.csproj",
+        "packagesPath": "C:\\Users\\karol\\.nuget\\packages\\",
+        "outputPath": "C:\\VS Projects\\Lichva\\Lich_va\\API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\waxer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\karol\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,14 +26,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj": {
-                "projectPath": "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj"
+              "C:\\VS Projects\\Lichva\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj": {
+                "projectPath": "C:\\VS Projects\\Lichva\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj"
               }
             }
           }
@@ -72,24 +73,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj": {
+    "C:\\VS Projects\\Lichva\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj",
+        "projectUniqueName": "C:\\VS Projects\\Lichva\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj",
         "projectName": "BankDataLibrary",
-        "projectPath": "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj",
-        "packagesPath": "C:\\Users\\waxer\\.nuget\\packages\\",
-        "outputPath": "D:\\Users\\Waxer\\programowanie\\Studia\\sem5\\.NET\\project1\\dotNET_projekt\\Lich_va\\BankDataLibrary\\obj\\",
+        "projectPath": "C:\\VS Projects\\Lichva\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj",
+        "packagesPath": "C:\\Users\\karol\\.nuget\\packages\\",
+        "outputPath": "C:\\VS Projects\\Lichva\\Lich_va\\BankDataLibrary\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\waxer\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\karol\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -98,6 +99,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -131,7 +133,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }
