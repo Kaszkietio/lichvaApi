@@ -10,3 +10,15 @@ C:\VS Projects\Lichva\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.d
 C:\VS Projects\Lichva\Lich_va\BankDataLibrary\obj\Debug\net6.0\refint\BankDataLibrary.dll
 C:\VS Projects\Lichva\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.pdb
 C:\VS Projects\Lichva\Lich_va\BankDataLibrary\obj\Debug\net6.0\ref\BankDataLibrary.dll
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\bin\Debug\net6.0\BankDataLibrary.deps.json
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\bin\Debug\net6.0\BankDataLibrary.dll
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\bin\Debug\net6.0\BankDataLibrary.pdb
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.csproj.AssemblyReference.cache
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.GeneratedMSBuildEditorConfig.editorconfig
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.AssemblyInfoInputs.cache
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.AssemblyInfo.cs
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.csproj.CoreCompileInputs.cache
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.dll
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\refint\BankDataLibrary.dll
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.pdb
+D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\ref\BankDataLibrary.dll

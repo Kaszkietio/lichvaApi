@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ox6x19tOSzto1k112GhNuo2t0nZNOvSWafeTShsJdswY6rwrypvQO4sQY6LtXBEsfliu2EaO2svpwpJTfr7iFA==",
+  "dgSpecHash": "ExWP1DIBOeNtGmLS3qbqGi1hbbGiVZNMWNFKl+Xb+NRjpsw2wgp+OVqfCMmuggM8Q8mCezF8rkrBnf//gls/aA==",
   "success": true,
-  "projectFilePath": "C:\\VS Projects\\Lichva\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj",
+  "projectFilePath": "D:\\Dev\\NET\\lichvaApi\\Lich_va\\BankDataLibrary\\BankDataLibrary.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

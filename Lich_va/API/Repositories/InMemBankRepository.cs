@@ -4,6 +4,39 @@ namespace API.Repositories
 {
     public class InMemBankRepository : IBankRepository
     {
+        List<Inquire> Inquires { get; } = new List<Inquire>();
+        List<Offer> Offers { get; } = new List<Offer>();
+
+        public void CreateInquire(Inquire inquire)
+        {
+            Inquires.Add(inquire);
+        }
+
+        public Inquire? GetInquire(int id)
+        {
+            return Inquires.FirstOrDefault(x => x.Id == id);
+        }
+
+        public IEnumerable<Inquire> GetInquires()
+        {
+            return Inquires;
+        }
+
+        public Offer? GetOffer(int offerId)
+        {
+            return Offers.FirstOrDefault(x => x.Id == offerId);
+        }
+
+        public IEnumerable<Offer> GetOffers()
+        {
+            return Offers;
+        }
+
+        public void CreateOffer(Offer offer)
+        {
+            Offers.Add(offer);
+        }
+
         public void ChangeOfferStatus(int offerID, Offer.Status status)
         {
         }
