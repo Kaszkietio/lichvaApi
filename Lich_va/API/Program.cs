@@ -1,17 +1,15 @@
 using API.Repositories;
-using Backend.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-DbContext context = new();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IBankRepository, InMemBankRepository>();
+builder.Services.AddSingleton<IBankRepository, DBBankRepository>();
 
 var app = builder.Build();
 

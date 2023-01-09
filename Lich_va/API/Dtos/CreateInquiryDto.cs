@@ -2,13 +2,16 @@
 
 namespace API.Dtos
 {
-    public record InquireDto
+    public record CreateInquiryDto
     {
         [Required]
-        public int Id { get; init; }
-        public DateTime CreationDate { get; init; }
+        [Range(0, int.MaxValue)]
         public int UserId { get; init; }
+        [Required]
+        [Range(0, int.MaxValue)]
         public int Ammount { get; init; }
+        [Required]
+        [Range(0, int.MaxValue)]
         public int Installments { get; init; } 
     }
 }

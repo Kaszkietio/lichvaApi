@@ -4,11 +4,11 @@ namespace API.Repositories
 {
     public interface IBankRepository
     {
-        public void CreateInquire(Inquire inquire);
+        public void CreateInquiry(Inquiry inquiry);
 
-        public Inquire? GetInquire(int id);
+        public Inquiry? GetInquiry(int id);
 
-        public IEnumerable<Inquire> GetInquires();
+        public IEnumerable<Inquiry> GetInquires();
 
         public Offer? GetOffer(int offerId);
         public IEnumerable<Offer> GetOffers();

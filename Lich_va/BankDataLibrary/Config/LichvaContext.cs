@@ -1,0 +1,40 @@
+﻿using BankDataLibrary.Entities;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BankDataLibrary.Config
+{
+    public class LichvaContext : DbContext
+    {
+        private static readonly string connectionString =
+            "Server = tcp:lichvadbserver.database.windows.net,1433;" +
+            "Initial Catalog = lichvaDB;" +
+            "Persist Security Info=False;" +
+            "User ID = APIuser;" +
+            "Password=\"kurwodzialaj3!\";" +
+            "MultipleActiveResultSets=False;" +
+            "Encrypt=True;" +
+            "TrustServerCertificate=False;" +
+            "Connection Timeout = 30;";
+        public const string SchemaName = "dbo";
+
+        public LichvaContext() : base(GetContextOptions())
+        {}
+
+        private static DbContextOptions GetContextOptions()
+        {
+            DbContextOptionsBuilder result = new();
+
+            result.UseSqlServer(connectionString);
+            return result.Options;
+        }
+
+        // MODELS
+        public virtual DbSet<Bank> Banks { get; set; }
+        public virtual DbSet<Inquiry> Inquiries { get; set; }
+    }
+}
