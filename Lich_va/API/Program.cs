@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-LichvaContext.ConnectionString = builder.Configuration["DBMS:connectionString"];
+//LichvaContext.ConnectionString = builder.Configuration["DBMS:connectionString"];
 
 
 builder.Services.AddControllers();
