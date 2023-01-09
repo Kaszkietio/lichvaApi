@@ -21,7 +21,8 @@ namespace Backend.Config
                 using SqlConnection db = new(connectionString);
                 Console.WriteLine("\nQuery data exapmle");
                 Console.WriteLine("=====================");
-                string sql = "SELECT * FROM users;";
+                //string sql = "SELECT * FROM users;";
+                string sql = "INSERT INTO users VALUES (SYSDATE, 'dupa', '1', 1, 'dupa', 'wadwa', '213', 321, 'topa', 'kupa');";
 
                 using SqlCommand command = new(sql, db);
 
