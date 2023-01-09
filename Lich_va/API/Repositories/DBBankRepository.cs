@@ -1,70 +1,34 @@
-﻿using BankDataLibrary.Entities;
+﻿using BankDataLibrary.Config;
+using BankDataLibrary.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories
 {
-    public class InMemBankRepository : IBankRepository
+    public class DBBankRepository : IBankRepository
     {
-        List<Inquiry> Inquires { get; } = new List<Inquiry>();
-        List<Offer> Offers { get; } = new List<Offer>();
-
-        public void CreateInquiry(Inquiry inquiry)
-        {
-            Inquires.Add(inquiry);
-        }
-
-        public Inquiry? GetInquiry(int id)
-        {
-            return Inquires.FirstOrDefault(x => x.id == id);
-        }
-
-        public IEnumerable<Inquiry> GetInquires()
-        {
-            return Inquires;
-        }
-
-        public Offer? GetOffer(int offerId)
-        {
-            return Offers.FirstOrDefault(x => x.Id == offerId);
-        }
-
-        public IEnumerable<Offer> GetOffers()
-        {
-            return Offers;
-        }
-
-        public void CreateOffer(Offer offer)
-        {
-            Offers.Add(offer);
-        }
-
         public void ChangeOfferStatus(int offerID, Offer.Status status)
         {
+            throw new NotImplementedException();
         }
 
         public void ChangleRole(int userID, User.Role role)
         {
+            throw new NotImplementedException();
         }
 
         public bool CheckForAdmin(string APIToken)
         {
-            return true;
+            throw new NotImplementedException();
         }
 
         public bool CheckForBank(string APIToken)
         {
-            return false;
+            throw new NotImplementedException();
         }
 
         public bool CheckForEmployee(string APIToken)
         {
-            try
-            {
-                return true;
-            }
-            catch(Exception ex)
-            {
-                throw new InvalidDataException("There is no such employee.", ex);
-            }
+            throw new NotImplementedException();
         }
 
         public void CheckForPlatformPermission(string APIToken)
@@ -102,6 +66,18 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public void CreateInquiry(Inquiry inquiry)
+        {
+            using LichvaContext db = new();
+            db.Inquiries.Add(inquiry);
+            db.SaveChanges();
+        }
+
+        public void CreateOffer(Offer offer)
+        {
+            throw new NotImplementedException();
+        }
+
         public User CreateUser(string email, string GID)
         {
             throw new NotImplementedException();
@@ -118,6 +94,29 @@ namespace API.Repositories
         }
 
         public List<User> GetExtendedUsers(int offset, string[] sorts, string filter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Inquiry> GetInquires()
+        {
+            using LichvaContext db = new();
+            return db.Inquiries.ToList();
+        }
+
+        public Inquiry? GetInquiry(int id)
+        {
+            IEnumerable<Inquiry> inquiries = GetInquires();
+            Inquiry? inquiry = inquiries.FirstOrDefault(x => x.id == id);
+            return inquiry;
+        }
+
+        public Offer? GetOffer(int offerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Offer> GetOffers()
         {
             throw new NotImplementedException();
         }

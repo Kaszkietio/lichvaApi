@@ -5,15 +5,15 @@ namespace API
 {
     public static class Extensions
     {
-        public static InquireDto AsDto(this Inquire inquire)
+        public static InquiryDto AsDto(this Inquiry inquire)
         {
-            InquireDto result = new()
+            InquiryDto result = new()
             {
-                Id = inquire.Id,
-                CreationDate = inquire.CreationDate,
-                UserId = inquire.UserId,
-                Ammount = inquire.Ammount,
-                Installments = inquire.Installments,
+                Id = inquire.id,
+                CreationDate = inquire.creation_date,
+                UserId = inquire.user_id,
+                Ammount = inquire.ammount,
+                Installments = inquire.installments,
             };
             return result;
         }

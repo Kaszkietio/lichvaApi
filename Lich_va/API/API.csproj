@@ -1,9 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>227b1fe4-f5c9-4829-93af-59be877cb08f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Backend\Backend.csproj" />
     <ProjectReference Include="..\BankDataLibrary\BankDataLibrary.csproj" />
   </ItemGroup>
 
