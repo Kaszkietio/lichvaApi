@@ -22,7 +22,7 @@ namespace Backend.Config
                 Console.WriteLine("\nQuery data exapmle");
                 Console.WriteLine("=====================");
                 //string sql = "SELECT * FROM users;";
-                string sql = "INSERT INTO users VALUES (SYSDATE, 'dupa', '1', 1, 'dupa', 'wadwa', '213', 321, 'topa', 'kupa');";
+                string sql = "INSERT INTO users (creation_date, role, hash, internal, email, first_name, last_name, job_type, income_level, id_type, id_number) VALUES (GETDATE(), 'user', 'd', 1, 'mail', 'imie', 'nazwisko', 'communications', 1, 'passport', 'id_num');";
 
                 using SqlCommand command = new(sql, db);
 
