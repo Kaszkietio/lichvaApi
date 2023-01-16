@@ -9,11 +9,11 @@ namespace API
         {
             InquiryDto result = new()
             {
-                Id = inquire.id,
-                CreationDate = inquire.creation_date,
-                UserId = inquire.user_id,
-                Ammount = inquire.ammount,
-                Installments = inquire.installments,
+                Id = inquire.Id,
+                CreationDate = inquire.CreationDate,
+                UserId = inquire.UserId,
+                Ammount = inquire.Ammount,
+                Installments = inquire.Installments,
             };
             return result;
         }
@@ -27,10 +27,19 @@ namespace API
                 Ammount = offer.Ammount,
                 Installments = offer.Installments,
                 BankId = offer.BankId,
-                GeneratedContract = offer.GeneratedContract,
-                OfferStatus = offer.OfferStatus.ToString(),
                 PlatformId = offer.PlatformId,
-                SignedContract = offer.SignedContract,
+                Status = offer.Status,
+            };
+            return result;
+        }
+
+        public static BankDto AsDto(this Bank bank)
+        {
+            BankDto result = new()
+            {
+                Id = bank.Id,
+                CreationDate = bank.CreationDate,
+                Name = bank.Name,
             };
             return result;
         }

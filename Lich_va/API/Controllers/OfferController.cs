@@ -3,6 +3,8 @@ using API.Repositories;
 using BankDataLibrary.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query;
+using System.Runtime.InteropServices;
 
 namespace API.Controllers
 {
@@ -19,10 +21,10 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("{offerId}")]
-        public ActionResult<OfferDto> Get(int offerId) 
+        public async Task<ActionResult<OfferDto>> GetAsync(int offerId)
         {
-            Offer? offer = Repository.GetOffer(offerId);
-            if(offer == null)
+            Offer? offer = await Repository.GetOfferAsync(offerId);
+            if (offer == null)
             {
                 return NotFound();
             }
@@ -31,43 +33,32 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<OfferDto>> GetAll()
+        public async Task<ActionResult<IEnumerable<OfferDto>>> GetAllAsync(
+            int? inquiryId = null,
+            int? userId = null,
+            int? bankId = null
+            )
         {
-            return Ok(Repository.GetOffers().Select(x => x.AsDto()));
+            return Ok((await Repository.GetOffersAsync(inquiryId, userId, bankId)).Select(x => x.AsDto()));
         }
 
         [HttpPost]
-        public ActionResult<OfferDto> CreateOffer(CreateOfferDto createOffer)
+        public async Task<ActionResult<OfferDto>> CreateOfferAsync(CreateOfferDto createOffer)
         {
-            Random r = new();
-            object? offerStatus;
-            if(!Enum.TryParse(typeof(Offer.Status), createOffer.OfferStatus, out offerStatus))
-            {
-                return BadRequest();
-            }
-
-            if(offerStatus == null)
-            {
-                return BadRequest();
-            }
-
             Offer offer = new()
             {
-                Id = r.Next(),
                 CreationDate = DateTime.Now,
                 UserId = createOffer.UserId,
                 BankId = createOffer.BankId,
                 PlatformId = createOffer.PlatformId,
                 Ammount = createOffer.Ammount,
                 Installments = createOffer.Installments,
-                GeneratedContract = createOffer.GeneratedContract,
-                SignedContract = createOffer.SignedContract,
-                OfferStatus = (Offer.Status)offerStatus,
+                Status = Category.OfferStatusCaregories.First().Name,
             };
 
-            Repository.CreateOffer(offer);
+            await Repository.CreateOfferAsync(offer);
 
-            return CreatedAtAction(nameof(Get), new { offerId = offer.Id }, offer.AsDto());
+            return CreatedAtAction(nameof(GetAsync), new { offerId = offer.Id }, offer.AsDto());
         }
     }
 }

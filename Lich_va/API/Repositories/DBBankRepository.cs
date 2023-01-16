@@ -1,179 +1,160 @@
 ﻿using BankDataLibrary.Config;
 using BankDataLibrary.Entities;
 using Microsoft.EntityFrameworkCore;
+using static API.Repositories.IBankRepository;
 
 namespace API.Repositories
 {
     public class DBBankRepository : IBankRepository
     {
-        public void ChangeOfferStatus(int offerID, Offer.Status status)
+        public async Task CreateInquiryAsync(Inquiry inquiry)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            await db.AddAsync(inquiry);
+            await db.SaveChangesAsync();
         }
 
-        public void ChangleRole(int userID, User.Role role)
+        public async Task CreateLoginHistoryAsync(LoginHistory login)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            await db.AddAsync(login);
+            await db.SaveChangesAsync();
         }
 
-        public bool CheckForAdmin(string APIToken)
+        public async Task CreateOfferAsync(Offer offer)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            await db.AddAsync(offer);
+            await db.SaveChangesAsync();
         }
 
-        public bool CheckForBank(string APIToken)
+        public async Task CreateOfferHistoryAsync(OfferHistory offer)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            await db.AddAsync(offer);
+            await db.SaveChangesAsync();
         }
 
-        public bool CheckForEmployee(string APIToken)
+        public async Task CreateUserAsync(User user)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            await db.AddAsync(user);
+            await db.SaveChangesAsync();
         }
 
-        public void CheckForPlatformPermission(string APIToken)
+        public async Task<Bank?> GetBankAsync(int bankId)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.Banks
+                .FirstOrDefaultAsync(bank => bank.Id == bankId);
         }
 
-        public bool CheckForUser(string APIToken)
+        public async Task<IEnumerable<Bank>> GetBanksAsync()
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.Banks
+                .ToListAsync();
         }
 
-        public void CheckIfUserExists(string email)
+        public async Task<IEnumerable<Inquiry>> GetInquiriesAsync(int? inqId = null, int? userId = null)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.Inquiries
+                .Where(inq => inqId == null || inqId == inq.Id)
+                .Where(inq => userId == null || userId == inq.UserId)
+                .ToListAsync();
         }
 
-        public bool CheckIfUserRegisterable(string APIToken)
+
+    public async Task<IEnumerable<LoginHistory>> GetLoginHistoriesAsync()
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.LoginHistories
+                .ToListAsync();
         }
 
-        public string CreateDoc(int offerID)
+        public async Task<LoginHistory?> GetLoginHistoryAsync(int userId)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.LoginHistories
+                .FirstOrDefaultAsync(log => log.UserId== userId);
         }
 
-        public User CreateExternalUser(UserData userData)
+        public async Task<Offer?> GetOfferAsync(int userId)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.Offers.FirstOrDefaultAsync(offer => offer.UserId == userId);
         }
 
-        public Offer CreateInitialOffer(int userID, int installments, int ammount)
+        public async Task<IEnumerable<OfferHistory>> GetOfferHistoryAsync(int? userId = null)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.OfferHistories.ToListAsync();
         }
 
-        public void CreateInquiry(Inquiry inquiry)
+        public async Task<IEnumerable<Offer>> GetOffersAsync(int? userId = null, int? inquiryId = null, int? bankId = null)
         {
-            using LichvaContext db = new();
-            db.Inquiries.Add(inquiry);
-            db.SaveChanges();
+            using LichvaContext db = new LichvaContext();
+            IQueryable<Offer> filter = db.Offers;
+            if(userId != null)
+                filter = filter.Where(offer => offer.UserId == userId);
+            if (inquiryId != null)
+                filter = filter.Where(offer => offer.Id == inquiryId);
+            if(bankId != null)
+                filter = filter.Where(offer => offer.BankId == bankId);
+
+            return await filter.ToListAsync();
         }
 
-        public void CreateOffer(Offer offer)
+        public async Task<User?> GetUserAsync(int userId)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.Users.FirstOrDefaultAsync(x => x.Id == userId);
         }
 
-        public User CreateUser(string email, string GID)
+        public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            return await db.Users.ToListAsync();
         }
 
-        public List<Offer> GetAllInitialOffers(int userID, int installments, int ammount)
+        public async Task UpdateOfferAsync(Offer offer)
         {
-            throw new NotImplementedException();
+            using LichvaContext db = new LichvaContext();
+            Offer? current = await db.Offers.FirstOrDefaultAsync(x => x.Id == offer.Id);
+            if (current == null) return;
+
+            db.Entry(current).CurrentValues.SetValues(offer);
+
+            //current.UserId = offer.Id;
+            //current.BankId = offer.BankId;
+            //current.PlatformId = offer.PlatformId;
+            //current.Ammount = offer.Ammount;
+            //current.Installments = offer.Installments;
+
+            await db.SaveChangesAsync();
         }
 
-        public List<Offer> GetExtendedOffers(int offset, string[] sorts, string filter)
+        public async Task UpdateUserAsync(User user)
         {
-            throw new NotImplementedException();
-        }
+            using LichvaContext db = new LichvaContext();
+            User? current = await db.Users.FirstOrDefaultAsync(x => x.Id == user.Id);
+            if (current == null) return;
 
-        public List<User> GetExtendedUsers(int offset, string[] sorts, string filter)
-        {
-            throw new NotImplementedException();
-        }
+            db.Entry(current).CurrentValues.SetValues(user);
 
-        public IEnumerable<Inquiry> GetInquires()
-        {
-            using LichvaContext db = new();
-            return db.Inquiries.ToList();
-        }
-
-        public Inquiry? GetInquiry(int id)
-        {
-            IEnumerable<Inquiry> inquiries = GetInquires();
-            Inquiry? inquiry = inquiries.FirstOrDefault(x => x.id == id);
-            return inquiry;
-        }
-
-        public Offer? GetOffer(int offerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Offer> GetOffers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Offer> GetOffers(string callAPIToken, int offset, string[] sorts, string filter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Offer.Status GetOfferStatus(int offerID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetUserAPIToken(string email)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User GetUserData(string APIToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetUserID(string mail)
-        {
-            throw new NotImplementedException();
-        }
-
-        public UserPanelData GetUserPanelData(string APIToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LoginUser(string APIToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User RegisterUser(string APIToken, string firstName, string lastName, User.JobCategories jobType, double incomeLevel, User.IdTypes idType, string idNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool SearchForUser(string mail)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendUpdateEmail(int offerID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UploadDoc(int offerID, byte[] signedDoc)
-        {
-            throw new NotImplementedException();
+            //current.Role  = user.Role;
+            //current.Hash = user.Hash;
+            //current.Internal = user.Internal;
+            //current.Email = user.Email;
+            //current.FirstName= user.FirstName;
+            //current.LastName= user.LastName;
+            //current.JobType= user.JobType;
+            //current.IncomeLevel= user.IncomeLevel;
+            //current.IdType= user.IdType;
+            //current.IdNumber= user.IdNumber;
+            await db.SaveChangesAsync();
         }
     }
 }
+

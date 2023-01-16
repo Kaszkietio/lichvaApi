@@ -1,26 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BankDataLibrary.Config;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BankDataLibrary.Entities
 {
+    [Table("offers", Schema = LichvaContext.SchemaName)]
     public class Offer
     {
-        public enum Status : int
-        {
-            BigCycFanclub,
-        };
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; init; }
+
+        [Column("creation_date")]
         public DateTime CreationDate { get; init; }
-        public int UserId { get; init; }
-        public int BankId { get; init; }
-        public int PlatformId { get; init; }
-        public int Ammount { get; init; }
-        public int Installments { get; init; }
-        public string GeneratedContract { get; init; } = string.Empty;
-        public string SignedContract { get; init; } = string.Empty;
-        public Status OfferStatus { get; set; }
+
+        [Column("user_id")]
+        public int UserId { get; set; }
+
+        [Column("bank_id")]
+        public int BankId { get; set; }
+
+        [Column("platform_id")]
+        public int PlatformId { get; set; }
+
+        public int Ammount { get; set; }
+
+        public int Installments { get; set; }
+
+        public string Status { get; set; } = string.Empty;
+
+        public virtual User User { get; set; }
+
+        public virtual Bank Bank { get; set; }
+
+        public virtual Bank Platform { get; set; }
+
+        public virtual ICollection<OfferHistory> History { get; set; }
     }
 }

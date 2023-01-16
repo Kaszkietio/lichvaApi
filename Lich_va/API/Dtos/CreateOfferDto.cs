@@ -20,11 +20,5 @@ namespace API.Dtos
         [Required]
         [Range(0, int.MaxValue)]
         public int Installments { get; init; }
-        [Required]
-        public string GeneratedContract { get; init; } 
-        [Required]
-        public string SignedContract { get; init; } 
-        [Required]
-        public string OfferStatus { get; init; } 
     }
 }
