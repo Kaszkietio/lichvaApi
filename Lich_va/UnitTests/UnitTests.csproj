@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\API\API.csproj" />
     <ProjectReference Include="..\BankDataLibrary\BankDataLibrary.csproj" />
   </ItemGroup>
 

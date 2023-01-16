@@ -4,175 +4,109 @@ namespace API.Repositories
 {
     public class InMemBankRepository : IBankRepository
     {
-        List<Inquiry> Inquires { get; } = new List<Inquiry>();
-        List<Offer> Offers { get; } = new List<Offer>();
-
-        public void CreateInquiry(Inquiry inquiry)
+        List<Inquiry> Inquires { get; } = new List<Inquiry>() 
+        { 
+            //new Inquiry 
+            //{
+            //    id = 1,
+                 
+            //} 
+        };
+        List<Offer> Offers { get; } = new List<Offer>()
         {
-            Inquires.Add(inquiry);
-        }
-
-        public Inquiry? GetInquiry(int id)
-        {
-            return Inquires.FirstOrDefault(x => x.id == id);
-        }
-
-        public IEnumerable<Inquiry> GetInquires()
-        {
-            return Inquires;
-        }
-
-        public Offer? GetOffer(int offerId)
-        {
-            return Offers.FirstOrDefault(x => x.Id == offerId);
-        }
-
-        public IEnumerable<Offer> GetOffers()
-        {
-            return Offers;
-        }
-
-        public void CreateOffer(Offer offer)
-        {
-            Offers.Add(offer);
-        }
-
-        public void ChangeOfferStatus(int offerID, Offer.Status status)
-        {
-        }
-
-        public void ChangleRole(int userID, User.Role role)
-        {
-        }
-
-        public bool CheckForAdmin(string APIToken)
-        {
-            return true;
-        }
-
-        public bool CheckForBank(string APIToken)
-        {
-            return false;
-        }
-
-        public bool CheckForEmployee(string APIToken)
-        {
-            try
+            new Offer
             {
-                return true;
-            }
-            catch(Exception ex)
-            {
-                throw new InvalidDataException("There is no such employee.", ex);
-            }
-        }
+                 Id = 1,
+                 //status = Offer.OfferStatus.Offered,
+            },
+        };
 
-        public void CheckForPlatformPermission(string APIToken)
+        public Task CreateInquiryAsync(Inquiry inquiry)
         {
             throw new NotImplementedException();
         }
 
-        public bool CheckForUser(string APIToken)
+        public Task CreateLoginHistoryAsync(LoginHistory login)
         {
             throw new NotImplementedException();
         }
 
-        public void CheckIfUserExists(string email)
+        public Task CreateOfferAsync(Offer offer)
         {
             throw new NotImplementedException();
         }
 
-        public bool CheckIfUserRegisterable(string APIToken)
+        public Task CreateOfferHistoryAsync(OfferHistory offer)
         {
             throw new NotImplementedException();
         }
 
-        public string CreateDoc(int offerID)
+        public Task CreateUserAsync(User user)
         {
             throw new NotImplementedException();
         }
 
-        public User CreateExternalUser(UserData userData)
+        public Task<Bank?> GetBankAsync(int bankId)
         {
             throw new NotImplementedException();
         }
 
-        public Offer CreateInitialOffer(int userID, int installments, int ammount)
+        public Task<IEnumerable<Bank>> GetBanksAsync()
         {
             throw new NotImplementedException();
         }
 
-        public User CreateUser(string email, string GID)
+        public Task<IEnumerable<Inquiry>> GetInquiriesAsync(int? userId = null)
         {
             throw new NotImplementedException();
         }
 
-        public List<Offer> GetAllInitialOffers(int userID, int installments, int ammount)
+        public Task<IEnumerable<Inquiry>> GetInquiriesAsync(int? inqId = null, int? userId = null)
         {
             throw new NotImplementedException();
         }
 
-        public List<Offer> GetExtendedOffers(int offset, string[] sorts, string filter)
+        public Task<IEnumerable<LoginHistory>> GetLoginHistoriesAsync()
         {
             throw new NotImplementedException();
         }
 
-        public List<User> GetExtendedUsers(int offset, string[] sorts, string filter)
+        public Task<LoginHistory?> GetLoginHistoryAsync(int userId)
         {
             throw new NotImplementedException();
         }
 
-        public List<Offer> GetOffers(string callAPIToken, int offset, string[] sorts, string filter)
+        public Task<Offer?> GetOfferAsync(int userId)
         {
             throw new NotImplementedException();
         }
 
-        public Offer.Status GetOfferStatus(int offerID)
+        public Task<IEnumerable<OfferHistory>> GetOfferHistoryAsync(int? userId = null)
         {
             throw new NotImplementedException();
         }
 
-        public string GetUserAPIToken(string email)
+        public Task<IEnumerable<Offer>> GetOffersAsync(int? userId = null, int? inquiryId = null, int? bankId = null)
         {
             throw new NotImplementedException();
         }
 
-        public User GetUserData(string APIToken)
+        public Task<User?> GetUserAsync(int userId)
         {
             throw new NotImplementedException();
         }
 
-        public int GetUserID(string mail)
+        public Task<IEnumerable<User>> GetUsersAsync()
         {
             throw new NotImplementedException();
         }
 
-        public UserPanelData GetUserPanelData(string APIToken)
+        public Task UpdateOfferAsync(Offer offer)
         {
             throw new NotImplementedException();
         }
 
-        public void LoginUser(string APIToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User RegisterUser(string APIToken, string firstName, string lastName, User.JobCategories jobType, double incomeLevel, User.IdTypes idType, string idNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool SearchForUser(string mail)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendUpdateEmail(int offerID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UploadDoc(int offerID, byte[] signedDoc)
+        public Task UpdateUserAsync(User user)
         {
             throw new NotImplementedException();
         }

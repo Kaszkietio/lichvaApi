@@ -2,6 +2,8 @@
 using API.Repositories;
 using BankDataLibrary.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
+using static API.Repositories.IBankRepository;
 
 namespace API.Controllers
 {
@@ -11,47 +13,51 @@ namespace API.Controllers
     {
         public IBankRepository Repository { get; init; }
 
-        public InquiryController(IBankRepository repo) 
+        public InquiryController(IBankRepository repo)
         {
             Repository = repo;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<InquiryDto>> GetAll()
+        public async Task<ActionResult<IEnumerable<InquiryDto>>> GetAll(
+            int? inquiryId = null,
+            int? userId = null
+            )
         {
-            return Ok(Repository.GetInquires().Select(x => x.AsDto()));
+            return Ok((await Repository.GetInquiriesAsync(inquiryId, userId))
+                                       .Select(x => x.AsDto()));
         }
 
         [HttpGet]
         [Route("{inquiryId}")]
-        public ActionResult<InquiryDto> Get(int inquiryId)
+        public async Task<ActionResult<InquiryDto>> Get(int inquiryId)
         {
-            Random random= new Random();
-            Inquiry? res = Repository.GetInquiry(inquiryId);
+            Inquiry? res = 
+                (await Repository.GetInquiriesAsync(inquiryId, null))
+                                 .FirstOrDefault();
 
-            if(res == null)
+            if (res == null)
             {
-                return NotFound();
+                return NoContent();
             }
 
             return Ok(res.AsDto());
         }
 
         [HttpPost]
-        public ActionResult<InquiryDto> Post(CreateInquiryDto createInquiryDto)
+        public async Task<ActionResult<InquiryDto>> Post(CreateInquiryDto createInquiryDto)
         {
-            Random r = new();
             Inquiry res = new()
             {
-                creation_date = DateTime.Now,
-                user_id = createInquiryDto.UserId,
-                installments = createInquiryDto.Installments,
-                ammount = createInquiryDto.Ammount,
+                CreationDate = DateTime.Now,
+                UserId = createInquiryDto.UserId,
+                Installments = createInquiryDto.Installments,
+                Ammount = createInquiryDto.Ammount,
             };
 
-            Repository.CreateInquiry(res);
+            await Repository.CreateInquiryAsync(res);
 
-            return CreatedAtAction(nameof(Get), new { inquiryId = res.id }, res.AsDto());
+            return CreatedAtAction(nameof(Get), new { inquiryId = res.Id }, res.AsDto());
         }
     }
 }

@@ -11,8 +11,6 @@ namespace API.Dtos
         public int PlatformId { get; init; }
         public int Ammount { get; init; }
         public int Installments { get; init; }
-        public string GeneratedContract { get; init; } = string.Empty;
-        public string SignedContract { get; init; } = string.Empty;
-        public string OfferStatus { get; init; } = Offer.Status.BigCycFanclub.ToString();
+        public string Status { get; init; } = string.Empty;
     }
 }

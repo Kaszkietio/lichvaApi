@@ -9,11 +9,14 @@ namespace BankDataLibrary.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public DateTime creation_date { get; set; }
+        [Column("creation_date")]
+        public DateTime CreationDate { get; set; }
 
-        public string name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
+        public virtual ICollection<Offer> Offers { get; set; }
+        public virtual ICollection<Offer> PlatformOffers { get; set; }
     }
 }

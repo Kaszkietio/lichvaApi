@@ -1,5 +1,4 @@
 ﻿using API.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -10,21 +9,41 @@ namespace API.Controllers
     {
         public IBankRepository Repository { get; init; }
 
-        public DictionaryController(IBankRepository repo) 
+        public DictionaryController(IBankRepository repo)
         {
             Repository = repo;
         }
 
         [HttpGet]
-        [Route("jobs")]
-        public ActionResult<IEnumerable<string>> GetJobs()
+        [Route("offerStatus")]
+        public async Task<ActionResult<IEnumerable<string>>> GetOfferStatusAsync()
         {
-            List<string> jobs = new List<string>();
-            jobs.Add("Śmieć");
-            jobs.Add("Cwel");
-            jobs.Add("Chuj");
+            IEnumerable<string> offertStatus = Category.OfferStatusCaregories.Select(cat => cat.Name);
+            return Ok(offertStatus);
+        }
 
+        [HttpGet]
+        [Route("jobs")]
+        public async Task<ActionResult<IEnumerable<string>>> GetJobsAsync()
+        {
+            IEnumerable<string> jobs = Category.UserJobCategories.Select(cat => cat.Name);
             return Ok(jobs);
         }
-    }
+
+        [HttpGet]
+        [Route("roles")]
+        public async Task<ActionResult<IEnumerable<string>>> GetRolesAsync()
+        {
+            IEnumerable<string> roles = Category.UserRoleCategories.Select(cat => cat.Name);
+            return Ok(roles);
+        }
+
+        [HttpGet]
+        [Route("idTypes")]
+        public async Task<ActionResult<IEnumerable<string>>> GetIdTypesAsync()
+        {
+            IEnumerable<string> types = Category.UserIdTypeCategories.Select(cat => cat.Name);
+            return Ok(types);
+        }
+}
 }
