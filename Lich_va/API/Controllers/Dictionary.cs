@@ -1,10 +1,13 @@
 ﻿using API.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/dictionary")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class DictionaryController : ControllerBase
     {
         public IBankRepository Repository { get; init; }
@@ -16,6 +19,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("offerStatus")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<string>>> GetOfferStatusAsync()
         {
             IEnumerable<string> offertStatus = Category.OfferStatusCaregories.Select(cat => cat.Name);

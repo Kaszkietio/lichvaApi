@@ -1,6 +1,8 @@
 ﻿using API.Dtos;
 using API.Repositories;
 using BankDataLibrary.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query;
@@ -10,6 +12,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OfferController : ControllerBase
     {
         IBankRepository Repository { get; init; }

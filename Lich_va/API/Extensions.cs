@@ -43,5 +43,23 @@ namespace API
             };
             return result;
         }
+
+        public static UserDto AsDto(this User user)
+        {
+            UserDto result = new()
+            {
+                CreationDate = user.CreationDate,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                Hash = user.Hash,
+                IdNumber = user.IdNumber,
+                IdType = user.IdType,
+                IncomeLevel = user.IncomeLevel,
+                JobType = user.JobType,
+                LastName = user.LastName,
+                Role = user.Role,
+            };
+            return result;
+        }
     }
 }

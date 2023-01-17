@@ -1,4 +1,5 @@
-﻿using BankDataLibrary.Config;
+﻿using API.Dtos;
+using BankDataLibrary.Config;
 using BankDataLibrary.Entities;
 using Microsoft.EntityFrameworkCore;
 using static API.Repositories.IBankRepository;
@@ -112,6 +113,12 @@ namespace API.Repositories
             return await db.Users.FirstOrDefaultAsync(x => x.Id == userId);
         }
 
+        public async Task<User?> GetUserAsync(string email)
+        {
+            using LichvaContext db = new LichvaContext();
+            return await db.Users.FirstOrDefaultAsync(x => x.Email == email);
+        }
+
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
             using LichvaContext db = new LichvaContext();
@@ -135,10 +142,10 @@ namespace API.Repositories
             await db.SaveChangesAsync();
         }
 
-        public async Task UpdateUserAsync(User user)
+        public async Task UpdateUserAsync(UpdateUserDto user)
         {
             using LichvaContext db = new LichvaContext();
-            User? current = await db.Users.FirstOrDefaultAsync(x => x.Id == user.Id);
+            User? current = await db.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
             if (current == null) return;
 
             db.Entry(current).CurrentValues.SetValues(user);
