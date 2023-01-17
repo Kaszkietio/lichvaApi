@@ -1,4 +1,5 @@
-﻿using BankDataLibrary.Entities;
+﻿using API.Dtos;
+using BankDataLibrary.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace API.Repositories
@@ -33,8 +34,9 @@ namespace API.Repositories
 
         // User
         public Task<User?> GetUserAsync(int userId);
+        public Task<User?> GetUserAsync(string email);
         public Task<IEnumerable<User>> GetUsersAsync();
         public Task CreateUserAsync(User user);
-        public Task UpdateUserAsync(User user);
+        public Task UpdateUserAsync(UpdateUserDto user);
     }
 }

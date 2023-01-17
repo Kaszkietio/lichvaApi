@@ -1,4 +1,5 @@
-﻿using BankDataLibrary.Entities;
+﻿using API.Dtos;
+using BankDataLibrary.Entities;
 
 namespace API.Repositories
 {
@@ -96,6 +97,11 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<User?> GetUserAsync(string email)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<User>> GetUsersAsync()
         {
             throw new NotImplementedException();
@@ -107,6 +113,11 @@ namespace API.Repositories
         }
 
         public Task UpdateUserAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateUserAsync(UpdateUserDto user)
         {
             throw new NotImplementedException();
         }
