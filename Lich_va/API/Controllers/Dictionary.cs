@@ -19,7 +19,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("offerStatus")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetOfferStatusAsync()
         {
             IEnumerable<string> offertStatus = Category.OfferStatusCaregories.Select(cat => cat.Name);
@@ -28,6 +28,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("jobs")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetJobsAsync()
         {
             IEnumerable<string> jobs = Category.UserJobCategories.Select(cat => cat.Name);
@@ -36,6 +37,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("roles")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetRolesAsync()
         {
             IEnumerable<string> roles = Category.UserRoleCategories.Select(cat => cat.Name);
@@ -44,6 +46,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("idTypes")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetIdTypesAsync()
         {
             IEnumerable<string> types = Category.UserIdTypeCategories.Select(cat => cat.Name);
