@@ -149,17 +149,8 @@ namespace API.Repositories
             if (current == null) return;
 
             db.Entry(current).CurrentValues.SetValues(user);
+            current.Internal = user.Active;
 
-            //current.Role  = user.Role;
-            //current.Hash = user.Hash;
-            //current.Internal = user.Internal;
-            //current.Email = user.Email;
-            //current.FirstName= user.FirstName;
-            //current.LastName= user.LastName;
-            //current.JobType= user.JobType;
-            //current.IncomeLevel= user.IncomeLevel;
-            //current.IdType= user.IdType;
-            //current.IdNumber= user.IdNumber;
             await db.SaveChangesAsync();
         }
     }

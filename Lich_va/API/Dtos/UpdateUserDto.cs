@@ -9,7 +9,7 @@ namespace API.Dtos
         [Required]
         public string Hash { get; set; } = string.Empty;
         [Required]
-        public bool Internal { get; set; }
+        public bool Active { get; set; }
         [Required]
         public string Email { get; set; } = string.Empty;
         [Required]
