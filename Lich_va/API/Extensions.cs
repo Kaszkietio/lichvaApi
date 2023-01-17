@@ -58,6 +58,7 @@ namespace API
                 JobType = user.JobType,
                 LastName = user.LastName,
                 Role = user.Role,
+                Active = user.Internal,
             };
             return result;
         }
