@@ -7,16 +7,17 @@ namespace BankDataLibrary.Entities
     [Table("banks", Schema = LichvaContext.SchemaName)]
     public class Bank
     {
-        [Key]
+        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Column("creation_date")]
-        public DateTime CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; }
 
-        public string Name { get; set; } = string.Empty;
+        public string? Name { get; set; }
 
         public virtual ICollection<Offer> Offers { get; set; }
         public virtual ICollection<Offer> PlatformOffers { get; set; }
+        public virtual ICollection<ForeignInquiry> ForeignInquiries { get; set; }
     }
 }
