@@ -119,6 +119,11 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<Inquiry>> GetInquiriesAsync(User user, (bool IsRange, IList<int>)? idFilter = null, (bool IsRange, IList<DateTime>)? createDateFilter = null, (bool IsRange, IList<int>)? ammountFilter = null, (bool IsRange, IList<int>)? installmentFilter = null, (bool IsRange, IList<int>)? bankIdFilter = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<JobType>> GetJobTypesAsync()
         {
             throw new NotImplementedException();
@@ -145,6 +150,11 @@ namespace API.Repositories
         }
 
         public Task<IEnumerable<Offer>> GetOffersAsync(User user, IList<int>? idFilter = null, IList<int>? inquiryIdFilter = null, IList<DateTime>? createDateFilter = null, IList<decimal>? percentageFilter = null, IList<decimal>? monthlyInstallmentFilter = null, IList<int>? statusFilter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Offer>> GetOffersAsync(User user, (bool IsRange, IList<int>)? idFilter = null, (bool IsRange, IList<int>)? inquiryIdFilter = null, (bool IsRange, IList<DateTime>)? createDateFilter = null, (bool IsRange, IList<decimal>)? percentageFilter = null, (bool IsRange, IList<decimal>)? monthlyInstallmentFilter = null, (bool IsRange, IList<int>)? statusFilter = null)
         {
             throw new NotImplementedException();
         }
@@ -190,6 +200,11 @@ namespace API.Repositories
         }
 
         public Task<IEnumerable<User>> GetUsersAsync(IList<int>? idFilter = null, IList<DateTime>? createDateFilter = null, IList<int>? roleFilter = null, IList<bool>? internalFilter = null, IList<bool>? anonymousFilter = null, IList<string>? emailFilter = null, IList<string>? hashFilter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<User>> GetUsersAsync((bool IsRange, IList<int>)? idFilter = null, (bool IsRange, IList<DateTime>)? createDateFilter = null, (bool IsRange, IList<int>)? roleFilter = null, (bool IsRange, IList<bool>)? internalFilter = null, (bool IsRange, IList<bool>)? anonymousFilter = null, (bool IsRange, IList<string>)? emailFilter = null, (bool IsRange, IList<string>)? hashFilter = null)
         {
             throw new NotImplementedException();
         }

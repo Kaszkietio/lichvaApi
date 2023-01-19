@@ -67,28 +67,28 @@ namespace API.Repositories
         // Inquiry
         public async Task<IEnumerable<Inquiry>> GetInquiriesAsync(
             User user,
-            IList<int>? idFilter = null,
-            IList<DateTime>? createDateFilter = null,
-            IList<int>? ammountFilter = null,
-            IList<int>? installmentFilter = null,
-            IList<int>? bankIdFilter = null
+            (bool IsRange, IList<int>)? idFilter = null,
+            (bool IsRange, IList<DateTime>)? createDateFilter = null,
+            (bool IsRange, IList<int>)? ammountFilter = null,
+            (bool IsRange, IList<int>)? installmentFilter = null,
+            (bool IsRange, IList<int>)? bankIdFilter = null
             )
         {
-            idFilter??= new List<int>();
-            createDateFilter ??= new List<DateTime>();
-            ammountFilter ??= new List<int>();
-            installmentFilter ??= new List<int>();
-            bankIdFilter ??= new List<int>();
-            return await InternalGetInquiriesAsync(user, idFilter, createDateFilter, ammountFilter, installmentFilter, bankIdFilter);
+            idFilter??= (false, new List<int>());
+            createDateFilter ??= (false, new List<DateTime>());
+            ammountFilter ??= (false, new List<int>());
+            installmentFilter ??= (false, new List<int>());
+            bankIdFilter ??= (false, new List<int>());
+            return await InternalGetInquiriesAsync(user, idFilter.Value, createDateFilter.Value, ammountFilter.Value, installmentFilter.Value, bankIdFilter.Value);
         }
 
         public async Task<IEnumerable<Inquiry>> InternalGetInquiriesAsync(
             User user,
-            IList<int> idFilter,
-            IList<DateTime> createDateFilter,
-            IList<int> ammountFilter,
-            IList<int> installmentFilter,
-            IList<int> bankIdFilter
+            (bool IsRange, IList<int> arr) idFilter,
+            (bool IsRange, IList<DateTime> arr) createDateFilter,
+            (bool IsRange, IList<int> arr) ammountFilter,
+            (bool IsRange, IList<int> arr) installmentFilter,
+            (bool IsRange, IList<int> arr) bankIdFilter
             )
         {
             using LichvaContext db = new();
@@ -100,33 +100,65 @@ namespace API.Repositories
                 .Where(x => x.UserId == user.Id);
 
 
-            if (idFilter.Count != 0)
+            if (idFilter.IsRange)
                 result = result.Where(inq =>
-                    idFilter.Contains(inq.Id)
+                    idFilter.arr.First() <= inq.Id && inq.Id <= idFilter.arr.Last()
                 );
-            if (createDateFilter.Count != 0)
+            else if (idFilter.arr.Count != 0)
+                result = result.Where(inq =>
+                    idFilter.arr.Contains(inq.Id)
+                );
+
+            if (createDateFilter.IsRange)
+                result = result.Where(inq =>
+                    createDateFilter.arr.First() <= inq.CreationDate &&
+                        inq.CreationDate <= createDateFilter.arr.Last()
+                );
+            else if (createDateFilter.arr.Count != 0)
                 result = result.Where(inq =>
                     inq.CreationDate.HasValue && 
-                    createDateFilter.Contains(inq.CreationDate.Value)
+                    createDateFilter.arr.Contains(inq.CreationDate.Value)
                 );
-            if (ammountFilter.Count != 0)
+
+            if (ammountFilter.IsRange)
+                result = result.Where(inq =>
+                    ammountFilter.arr.First() <= inq.Ammount && inq.Ammount <= ammountFilter.arr.Last()
+                );
+            else if (ammountFilter.arr.Count != 0)
                 result = result.Where(inq =>
                     inq.Ammount.HasValue &&
-                    ammountFilter.Contains(inq.Ammount.Value)
+                    ammountFilter.arr.Contains(inq.Ammount.Value)
                 );
-            if (installmentFilter.Count != 0)
+
+            if (installmentFilter.IsRange)
+                result = result.Where(inq =>
+                    installmentFilter.arr.First() <= inq.Installments && inq.Installments <= installmentFilter.arr.Last()
+                );
+            else if (installmentFilter.arr.Count != 0)
                 result = result.Where(inq =>
                     inq.Installments.HasValue && 
-                    installmentFilter.Contains(inq.Installments.Value)
+                    installmentFilter.arr.Contains(inq.Installments.Value)
                 );
-            if (bankIdFilter.Count != 0)
+
+            if (bankIdFilter.IsRange)
+            {
+                var lichvaBank =  await db.Banks.FirstOrDefaultAsync(bank => bank.Name == "Lichva");
+                int lichvaBankId = lichvaBank?.Id ?? 0;
+                result.Include(x => x.ForeignInquiry);
+
+                result = result.Where(inq =>
+                    (inq.ForeignInquiry != null && bankIdFilter.arr.First() <= inq.ForeignInquiry.BankId  && inq.ForeignInquiry.BankId <= bankIdFilter.arr.Last()) || 
+                    (inq.ForeignInquiry == null && bankIdFilter.arr.First() <= lichvaBankId  && lichvaBankId <= bankIdFilter.arr.Last())  
+                );
+            }
+            else if (bankIdFilter.arr.Count != 0)
             {
                 var lichvaBank =  await db.Banks.FirstOrDefaultAsync(bank => bank.Name == "Lichva");
                 int lichvaBankId = lichvaBank?.Id ?? 0;
                 result.Include(x => x.ForeignInquiry);
                 result = result.Where(inq =>
-                    (inq.ForeignInquiry == null && bankIdFilter.Contains(lichvaBankId)) || 
-                    (inq.ForeignInquiry != null && bankIdFilter.Contains(inq.ForeignInquiry.BankId))
+                    (inq.ForeignInquiry == null && bankIdFilter.arr.Contains(lichvaBankId)) || 
+                    (inq.ForeignInquiry != null && bankIdFilter.arr.Contains(inq.ForeignInquiry.BankId))
                 );
             }
 
@@ -177,32 +209,32 @@ namespace API.Repositories
         // Offer
         public async Task<IEnumerable<Offer>> GetOffersAsync(
             User user,
-            IList<int>? idFilter = null,
-            IList<int>? inquiryIdFilter = null,
-            IList<DateTime>? createDateFilter = null,
-            IList<decimal>? percentageFilter = null,
-            IList<decimal>? monthlyInstallmentFilter = null,
-            IList<int>? statusFilter = null 
+            (bool IsRange, IList<int>)? idFilter = null,
+            (bool IsRange, IList<int>)? inquiryIdFilter = null,
+            (bool IsRange, IList<DateTime>)? createDateFilter = null,
+            (bool IsRange, IList<decimal>)? percentageFilter = null,
+            (bool IsRange, IList<decimal>)? monthlyInstallmentFilter = null,
+            (bool IsRange, IList<int>)? statusFilter = null 
             )
         {
-            idFilter??= new List<int>();
-            inquiryIdFilter ??= new List<int>();
-            createDateFilter??= new List<DateTime>();
-            percentageFilter ??= new List<decimal>();
-            monthlyInstallmentFilter ??= new List<decimal>();
-            statusFilter ??= new List<int>();
+            idFilter??= (false, new List<int>());
+            inquiryIdFilter ??= (false, new List<int>());
+            createDateFilter??= (false, new List<DateTime>());
+            percentageFilter ??= (false, new List<decimal>());
+            monthlyInstallmentFilter ??= (false, new List<decimal>());
+            statusFilter ??= (false, new List<int>());
 
-            return await InternalGetOffersAsync(user, idFilter, inquiryIdFilter, createDateFilter, percentageFilter, monthlyInstallmentFilter, statusFilter);
+            return await InternalGetOffersAsync(user, idFilter.Value, inquiryIdFilter.Value, createDateFilter.Value, percentageFilter.Value, monthlyInstallmentFilter.Value, statusFilter.Value);
         }
 
         public async Task<IEnumerable<Offer>> InternalGetOffersAsync(
             User user,
-            IList<int> idFilter,
-            IList<int> inquiryIdFilter,
-            IList<DateTime> createDateFilter,
-            IList<decimal> percentageFilter,
-            IList<decimal> monthlyInstallmentFilter,
-            IList<int> statusFilter 
+            (bool IsRange, IList<int> arr) idFilter,
+            (bool IsRange, IList<int> arr) inquiryIdFilter,
+            (bool IsRange, IList<DateTime> arr) createDateFilter,
+            (bool IsRange, IList<decimal> arr) percentageFilter,
+            (bool IsRange, IList<decimal> arr) monthlyInstallmentFilter,
+            (bool IsRange, IList<int> arr) statusFilter 
             )
         {
             using LichvaContext db = new();
@@ -212,18 +244,35 @@ namespace API.Repositories
                 .Include(x => x.OfferStatus)
                 .Where(x => x.Inquiry.UserId == user.Id);
 
-            if(idFilter.Count != 0)
-                result = result.Where(x => idFilter.Contains(x.Id));
-            if(inquiryIdFilter.Count != 0)
-                result = result.Where(x => x.InquiryId.HasValue && inquiryIdFilter.Contains(x.InquiryId.Value));
-            if(createDateFilter.Count != 0)
-                result = result.Where(x => x.CreationDate.HasValue && createDateFilter.Contains(x.CreationDate.Value));
-            if(percentageFilter.Count != 0)
-                result = result.Where(x => x.Percentage.HasValue && percentageFilter.Contains(x.Percentage.Value));
-            if(monthlyInstallmentFilter.Count != 0)
-                result = result.Where(x => x.MonthlyInstallment.HasValue && monthlyInstallmentFilter.Contains(x.MonthlyInstallment.Value));
-            if(statusFilter.Count != 0)
-                result = result.Where(x => x.StatusId.HasValue && statusFilter.Contains(x.StatusId.Value));
+            if (idFilter.IsRange)
+                result = result.Where(x => idFilter.arr.First() <= x.Id && x.Id <= idFilter.arr.Last());
+            else if(idFilter.arr.Count != 0)
+                result = result.Where(x => idFilter.arr.Contains(x.Id));
+
+            if (inquiryIdFilter.IsRange)
+                result = result.Where(x => inquiryIdFilter.arr.First() <= x.InquiryId && x.InquiryId <= inquiryIdFilter.arr.Last());
+            else if(inquiryIdFilter.arr.Count != 0)
+                result = result.Where(x => x.InquiryId.HasValue && inquiryIdFilter.arr.Contains(x.InquiryId.Value));
+
+            if (createDateFilter.IsRange)
+                result = result.Where(x => createDateFilter.arr.First() <= x.CreationDate && x.CreationDate <= createDateFilter.arr.Last());
+            else if(createDateFilter.arr.Count != 0)
+                result = result.Where(x => x.CreationDate.HasValue && createDateFilter.arr.Contains(x.CreationDate.Value));
+
+            if (percentageFilter.IsRange)
+                result = result.Where(x => percentageFilter.arr.First() <= x.Percentage && x.Percentage <= percentageFilter.arr.Last());
+            else if(percentageFilter.arr.Count != 0)
+                result = result.Where(x => x.Percentage.HasValue && percentageFilter.arr.Contains(x.Percentage.Value));
+            
+            if (monthlyInstallmentFilter.IsRange)
+                result = result.Where(x => monthlyInstallmentFilter.arr.First() <= x.MonthlyInstallment && x.MonthlyInstallment <= monthlyInstallmentFilter.arr.Last());
+            else if(monthlyInstallmentFilter.arr.Count != 0)
+                result = result.Where(x => x.MonthlyInstallment.HasValue && monthlyInstallmentFilter.arr.Contains(x.MonthlyInstallment.Value));
+
+            if (statusFilter.IsRange)
+                result = result.Where(x => statusFilter.arr.First() <= x.StatusId && x.StatusId <= statusFilter.arr.Last());
+            else if(statusFilter.arr.Count != 0)
+                result = result.Where(x => x.StatusId.HasValue && statusFilter.arr.Contains(x.StatusId.Value));
 
             return await result.ToListAsync();
         }
@@ -311,65 +360,85 @@ namespace API.Repositories
             return user.AsOnCreationDto();
         }
         public async Task<IEnumerable<User>> GetUsersAsync(
-            IList<int>? idFilter = null, 
-            IList<DateTime>? createDateFilter = null, 
-            IList<int>? roleFilter = null, 
-            IList<bool>? internalFilter = null, 
-            IList<bool>? anonymousFilter = null, 
-            IList<string>? emailFilter = null,
-            IList<string>? hashFilter = null
+            (bool IsRange, IList<int>)? idFilter = null, 
+            (bool IsRange, IList<DateTime>)? createDateFilter = null, 
+            (bool IsRange, IList<int>)? roleFilter = null, 
+            (bool IsRange, IList<bool>)? internalFilter = null, 
+            (bool IsRange, IList<bool>)? anonymousFilter = null, 
+            (bool IsRange, IList<string>)? emailFilter = null,
+            (bool IsRange, IList<string>)? hashFilter = null
             )
         {
-            idFilter ??= new List<int>();
-            createDateFilter ??= new List<DateTime>();
-            roleFilter ??= new List<int>();
-            internalFilter ??= new List<bool>();
-            anonymousFilter ??= new List<bool>();
-            emailFilter ??= new List<string>();
-            hashFilter ??= new List<string>();
+            idFilter ??= (false, new List<int>());
+            createDateFilter ??= (false, new List<DateTime>());
+            roleFilter ??= (false, new List<int>());
+            internalFilter ??= (false, new List<bool>());
+            anonymousFilter ??= (false, new List<bool>());
+            emailFilter ??= (false, new List<string>());
+            hashFilter ??= (false, new List<string>());
 
-            return await InternalGetUsersAsync(idFilter, createDateFilter, emailFilter, roleFilter, internalFilter, anonymousFilter, hashFilter);
+            return await InternalGetUsersAsync(idFilter.Value, createDateFilter.Value, emailFilter.Value, roleFilter.Value, internalFilter.Value, anonymousFilter.Value, hashFilter.Value);
         }
 
 
         public async Task<IEnumerable<User>> InternalGetUsersAsync(
-            IList<int> idFilter,
-            IList<DateTime> createDateFilter,
-            IList<string> emailFilter,
-            IList<int> roleFilter,
-            IList<bool> internalFilter,
-            IList<bool> anonymousFilter,
-            IList<string> hashFilter
+            (bool IsRange, IList<int> arr) idFilter,
+            (bool IsRange, IList<DateTime> arr) createDateFilter,
+            (bool IsRange, IList<string> arr) emailFilter,
+            (bool IsRange, IList<int> arr) roleFilter,
+            (bool IsRange, IList<bool> arr) internalFilter,
+            (bool IsRange, IList<bool> arr) anonymousFilter,
+            (bool IsRange, IList<string> arr) hashFilter
             )
         {
             using LichvaContext db = new();
             var result = db.Users.AsQueryable();
 
-            if (idFilter.Count != 0)
-                result = result.Where(x => idFilter.Contains(x.Id));
-            if (createDateFilter.Count != 0)
+            if (idFilter.IsRange)
+                result = result.Where(x => idFilter.arr.First() <= x.Id && x.Id <= idFilter.arr.Last());
+            else if (idFilter.arr.Count != 0)
+                result = result.Where(x => idFilter.arr.Contains(x.Id));
+            
+            if (createDateFilter.IsRange)
+                result = result.Where(x => createDateFilter.arr.First() <= x.CreationDate && x.CreationDate <= createDateFilter.arr.Last());
+            else if (createDateFilter.arr.Count != 0)
                 result = result.Where(x =>
-                    x.CreationDate.HasValue && createDateFilter.Contains(x.CreationDate.Value)
+                    x.CreationDate.HasValue && createDateFilter.arr.Contains(x.CreationDate.Value)
                     );
-            if (roleFilter.Count != 0)
+
+            if (roleFilter.IsRange)
+                result = result.Where(x => roleFilter.arr.First() <= x.RoleId && x.RoleId <= roleFilter.arr.Last());
+            else if (roleFilter.arr.Count != 0)
                 result = result.Where(x =>
-                    x.RoleId.HasValue && roleFilter.Contains(x.RoleId.Value)
+                    x.RoleId.HasValue && roleFilter.arr.Contains(x.RoleId.Value)
                     );
-            if (internalFilter.Count != 0)
+
+            if (internalFilter.IsRange)
+                result = result.Where(x => internalFilter.arr.First() == x.Internal && x.Internal == internalFilter.arr.Last());
+            else if (internalFilter.arr.Count != 0)
                 result = result.Where(x =>
-                    x.Internal.HasValue && internalFilter.Contains(x.Internal.Value)
+                    x.Internal.HasValue && internalFilter.arr.Contains(x.Internal.Value)
                     );
-            if (anonymousFilter.Count != 0)
+
+            if (anonymousFilter.IsRange)
+                result = result.Where(x => anonymousFilter.arr.First() == x.Anonymous && x.Anonymous == anonymousFilter.arr.Last());
+            else if (anonymousFilter.arr.Count != 0)
                 result = result.Where(x =>
-                    x.Anonymous.HasValue && anonymousFilter.Contains(x.Anonymous.Value)
+                    x.Anonymous.HasValue && anonymousFilter.arr.Contains(x.Anonymous.Value)
                     );
-            if (emailFilter.Count != 0)
+
+            if (emailFilter.IsRange)
+                result = result.Where(x => emailFilter.arr.First().CompareTo(x.Email) <= 0 && emailFilter.arr.Last().CompareTo(x.Email) >= 0);
+            else if (emailFilter.arr.Count != 0)
                 result = result.Where(x =>
-                    x.Email != null && emailFilter.Contains(x.Email)
+                    x.Email != null && emailFilter.arr.Contains(x.Email)
                     );
-            if (hashFilter.Count != 0)
+
+            if (hashFilter.IsRange)
+                result = result.Where(x => hashFilter.arr.First().CompareTo(x.Hash) <= 0 && hashFilter.arr.Last().CompareTo(x.Hash) >= 0);
+            else if (hashFilter.arr.Count != 0)
                 result = result.Where(x =>
-                    x.Hash != null && hashFilter.Contains(x.Hash)
+                    x.Hash != null && hashFilter.arr.Contains(x.Hash)
                     );
 
             var tmp = await result.ToListAsync();

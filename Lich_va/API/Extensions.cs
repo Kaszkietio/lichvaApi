@@ -6,7 +6,9 @@ using API.Dtos.User;
 using API.Entities;
 using API.Helpers;
 using BankDataLibrary.Entities;
+using Microsoft.AspNetCore.Routing.Template;
 using System.Runtime.Remoting;
+using System.Text;
 
 namespace API
 {
@@ -150,6 +152,132 @@ namespace API
                     + "_"
                     + offer.Id.ToString());
         }
+
+        public static (bool IsRange, IList<string> arr) Parse(this string? s)
+        {
+            if(s == null) return (false, new List<string>());
+
+            var tmp = s.Trim().ToCharArray();
+            StringBuilder builder = new StringBuilder();
+            bool isRange = false;
+            List<string> result = new();
+            if(s.StartsWith("["))
+            {
+                isRange = true;
+                builder.Append(tmp.Skip(1).TakeWhile(x => x != ',').ToArray());
+                result.Add(builder.ToString());
+                builder.Clear();
+                builder.Append(tmp.SkipWhile(x => x != ',').Skip(1).SkipLast(1).ToArray());
+                result.Add(builder.ToString());
+            }
+            else
+            {
+                var arr = s.Split(',');
+                result = arr.ToList();
+            }
+            return (isRange, result);
+        }
+        public static (bool IsRange, IList<int> arr) ParseInt(this string? s)
+        {
+            if(s == null) return (false, new List<int>());
+
+            var tmp = s.Trim().ToCharArray();
+            StringBuilder builder = new StringBuilder();
+            bool isRange = false;
+            List<int> result = new();
+            if(s.StartsWith("["))
+            {
+                isRange = true;
+                builder.Append(tmp.Skip(1).TakeWhile(x => x != ',').ToArray());
+                result.Add(int.Parse(builder.ToString()));
+                builder.Clear();
+                builder.Append(tmp.SkipWhile(x => x != ',').Skip(1).SkipLast(1).ToArray());
+                result.Add(int.Parse(builder.ToString()));
+            }
+            else
+            {
+                var arr = s.Split(',');
+                result = arr.Select(x => int.Parse(x)).ToList();
+            }
+            return (isRange, result);
+        }
+
+        public static (bool IsRange, IList<decimal> arr) ParseDecimal(this string? s)
+        {
+            if(s == null) return (false, new List<decimal>());
+
+            var tmp = s.Trim().ToCharArray();
+            StringBuilder builder = new StringBuilder();
+            bool isRange = false;
+            List<decimal> result = new();
+            if(s.StartsWith("["))
+            {
+                isRange = true;
+                builder.Append(tmp.Skip(1).TakeWhile(x => x != ',').ToArray());
+                result.Add(decimal.Parse(builder.ToString()));
+                builder.Clear();
+                builder.Append(tmp.SkipWhile(x => x != ',').Skip(1).SkipLast(1).ToArray());
+                result.Add(decimal.Parse(builder.ToString()));
+            }
+            else
+            {
+                var arr = s.Split(',');
+                result = arr.Select(x => decimal.Parse(x)).ToList();
+            }
+            return (isRange, result);
+        }
+
+        public static (bool IsRange, IList<DateTime> arr) ParseDateTime(this string? s)
+        {
+            if(s == null) return (false, new List<DateTime>());
+
+            var tmp = s.Trim().ToCharArray();
+            StringBuilder builder = new StringBuilder();
+            bool isRange = false;
+            List<DateTime> result = new();
+            if(s.StartsWith("["))
+            {
+                isRange = true;
+                builder.Append(tmp.Skip(1).TakeWhile(x => x != ',').ToArray());
+                result.Add(DateTime.Parse(builder.ToString()));
+                builder.Clear();
+                builder.Append(tmp.SkipWhile(x => x != ',').Skip(1).SkipLast(1).ToArray());
+                result.Add(DateTime.Parse(builder.ToString()));
+            }
+            else
+            {
+                var arr = s.Split(',');
+                result = arr.Select(x => DateTime.Parse(x)).ToList();
+            }
+            return (isRange, result);
+        }
+        public static (bool IsRange, IList<bool> arr) ParseBool(this string? s)
+        {
+            if(s == null) return (false, new List<bool>());
+
+            var tmp = s.Trim().ToCharArray();
+            StringBuilder builder = new StringBuilder();
+            bool isRange = false;
+            List<bool> result = new();
+            if(s.StartsWith("["))
+            {
+                isRange = true;
+                builder.Append(tmp.Skip(1).TakeWhile(x => x != ',').ToArray());
+                result.Add(bool.Parse(builder.ToString()));
+                builder.Clear();
+                builder.Append(tmp.SkipWhile(x => x != ',').Skip(1).SkipLast(1).ToArray());
+                result.Add(bool.Parse(builder.ToString()));
+            }
+            else
+            {
+                var arr = s.Split(',');
+                result = arr.Select(x => bool.Parse(x)).ToList();
+            }
+            return (isRange, result);
+        }
+
+
+
 
     }
 }

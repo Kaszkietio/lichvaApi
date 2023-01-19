@@ -26,18 +26,30 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetInquiryDto>>> GetAll(
             [FromHeader] string authToken,
-            [FromQuery] IList<int> idFilter,
-            [FromQuery] IList<DateTime> createDateFilter,
-            [FromQuery] IList<int> ammountFilter,
-            [FromQuery] IList<int> installmentFilter,
-            [FromQuery] IList<int> bankIdFilter
+            //[FromQuery] IList<int> idFilter,
+            //[FromQuery] IList<DateTime> createDateFilter,
+            //[FromQuery] IList<int> ammountFilter,
+            //[FromQuery] IList<int> installmentFilter,
+            //[FromQuery] IList<int> bankIdFilter
+            [FromQuery] string? idFilter,
+            [FromQuery] string? createDateFilter,
+            [FromQuery] string? ammountFilter,
+            [FromQuery] string? installmentFilter,
+            [FromQuery] string? bankIdFilter
             )
         {
             try
             {
                 User user = await Repository.AuthenticateUserAsync(authToken);
                 
-                var result = await Repository.GetInquiriesAsync(user, idFilter, createDateFilter, ammountFilter, installmentFilter, bankIdFilter);
+                var result = await Repository.GetInquiriesAsync(
+                    user, 
+                    idFilter.ParseInt(),
+                    createDateFilter.ParseDateTime(),
+                    ammountFilter.ParseInt(),
+                    installmentFilter.ParseInt(), 
+                    bankIdFilter.ParseInt()
+                    );
                 return Ok(result.Select(x => x.AsGetDto()));
             }
             catch (Exception ex) 
@@ -59,7 +71,7 @@ namespace API.Controllers
                 User user = await Repository.AuthenticateUserAsync(authToken);
                 
                 Inquiry? res =
-                    (await Repository.GetInquiriesAsync(user, idFilter: new List<int> { inquiryId }))
+                    (await Repository.GetInquiriesAsync(user, idFilter: (false, new List<int> { inquiryId })))
                                      .FirstOrDefault();
 
                 if (res == null)

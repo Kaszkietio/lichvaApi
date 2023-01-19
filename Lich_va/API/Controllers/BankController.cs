@@ -1,5 +1,6 @@
 ﻿using API.Dtos.Bank;
 using API.Repositories;
+using BankDataLibrary.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace API.Controllers
             try
             {
                 await Repository.AuthenticateUserAsync(authToken);
-                var banks = await Repository.GetBanksAsync(names.ToList());
+                var banks = await Repository.GetBanksAsync(names);
                 return Ok(banks.Select(x => x.AsGetDto()));
             }
             catch (Exception ex)
