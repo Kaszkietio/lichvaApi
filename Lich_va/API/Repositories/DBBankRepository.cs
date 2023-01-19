@@ -8,6 +8,7 @@ using BankDataLibrary.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 using static API.Repositories.IBankRepository;
 
 namespace API.Repositories
@@ -144,27 +145,28 @@ namespace API.Repositories
                     installmentFilter.arr.Contains(inq.Installments.Value)
                 );
 
-            if (bankIdFilter.IsRange)
-            {
-                var lichvaBank =  await db.Banks.FirstOrDefaultAsync(bank => bank.Name == "Lichva");
-                int lichvaBankId = lichvaBank?.Id ?? 0;
-                result.Include(x => x.ForeignInquiry);
+            // TODO:
+            //if (bankIdFilter.IsRange)
+            //{
+            //    var lichvaBank =  await db.Banks.FirstOrDefaultAsync(bank => bank.Name == "Lichva");
+            //    int lichvaBankId = lichvaBank?.Id ?? 0;
+            //    result.Include(x => x.ForeignInquiry);
 
-                result = result.Where(inq =>
-                    (inq.ForeignInquiry != null && bankIdFilter.arr.First() <= inq.ForeignInquiry.BankId  && inq.ForeignInquiry.BankId <= bankIdFilter.arr.Last()) || 
-                    (inq.ForeignInquiry == null && bankIdFilter.arr.First() <= lichvaBankId  && lichvaBankId <= bankIdFilter.arr.Last())  
-                );
-            }
-            else if (bankIdFilter.arr.Count != 0)
-            {
-                var lichvaBank =  await db.Banks.FirstOrDefaultAsync(bank => bank.Name == "Lichva");
-                int lichvaBankId = lichvaBank?.Id ?? 0;
-                result.Include(x => x.ForeignInquiry);
-                result = result.Where(inq =>
-                    (inq.ForeignInquiry == null && bankIdFilter.arr.Contains(lichvaBankId)) || 
-                    (inq.ForeignInquiry != null && bankIdFilter.arr.Contains(inq.ForeignInquiry.BankId))
-                );
-            }
+            //    result = result.Where(inq =>
+            //        (inq.ForeignInquiry != null && bankIdFilter.arr.First() <= inq.ForeignInquiry.BankId  && inq.ForeignInquiry.BankId <= bankIdFilter.arr.Last()) || 
+            //        (inq.ForeignInquiry == null && bankIdFilter.arr.First() <= lichvaBankId  && lichvaBankId <= bankIdFilter.arr.Last())  
+            //    );
+            //}
+            //else if (bankIdFilter.arr.Count != 0)
+            //{
+            //    var lichvaBank =  await db.Banks.FirstOrDefaultAsync(bank => bank.Name == "Lichva");
+            //    int lichvaBankId = lichvaBank?.Id ?? 0;
+            //    result.Include(x => x.ForeignInquiry);
+            //    result = result.Where(inq =>
+            //        (inq.ForeignInquiry == null && bankIdFilter.arr.Contains(lichvaBankId)) || 
+            //        (inq.ForeignInquiry != null && bankIdFilter.arr.Contains(inq.ForeignInquiry.BankId))
+            //    );
+            //}
 
             return await result.ToListAsync();
         }
@@ -502,7 +504,10 @@ namespace API.Repositories
             await db.SaveChangesAsync();
         }
 
-        public async Task<User> AuthenticateUserAsync(string authToken)
+
+        // ////////////////////////////////////////////////////////////
+
+        public async Task<User?> AuthenticateUserAsync(string authToken)
         {
             using LichvaContext db = new();
             string userHash = Security.Decrypt(AppSettings.Instance.HashKey, authToken);
@@ -516,126 +521,59 @@ namespace API.Repositories
             return user;
         }
 
-        // OLD
-        //public async Task CreateInquiryAsync(Inquiry inquiry)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    await db.AddAsync(inquiry);
-        //    await db.SaveChangesAsync();
-        //}
+        public async Task<Role?> GetRoleAsync(User user)
+        {
+            using LichvaContext db = new LichvaContext();
+            return await db.Roles.FirstOrDefaultAsync(x => x.Id == user.RoleId);
+        }
 
-        //public async Task CreateOfferAsync(Offer offer)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    await db.AddAsync(offer);
-        //    await db.SaveChangesAsync();
-        //}
+        public async Task<bool> AuthorizeUserAsync(User user, string roleName)
+        {
+            Role? role = await GetRoleAsync(user);
+            return role != null && role.Name == roleName;
+        }
 
-        //public async Task CreateOfferHistoryAsync(OfferHistory offer)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    await db.AddAsync(offer);
-        //    await db.SaveChangesAsync();
-        //}
+        public async Task<IEnumerable<Offer>> GetUserOffersAsync(User user)
+        {
+            using LichvaContext db = new LichvaContext();
 
-        //public async Task CreateUserAsync(User user)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    await db.AddAsync(user);
-        //    await db.SaveChangesAsync();
-        //}
+            var inquiryIds = db.Inquiries.Where(x => x.UserId == user.Id).Select(x => x.Id);
 
-        //public async Task<Bank?> GetBankAsync(int bankId)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.Banks
-        //        .FirstOrDefaultAsync(bank => bank.Id == bankId);
-        //}
+            IQueryable<int> foreignInqs = db.ForeignInquiries
+                .Where(x => x.BankId == 1 && inquiryIds.Contains(x.InquiryId)).Select(x => x.InquiryId);
 
-        //public async Task<IEnumerable<Bank>> GetBanksAsync()
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.Banks
-        //        .ToListAsync();
-        //}
+            var offers = await db.Offers.Where(x => foreignInqs.Contains(x.InquiryId.Value)).ToListAsync();
 
-        //public async Task<IEnumerable<Inquiry>> GetInquiriesAsync(int? inqId = null, int? userId = null)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.Inquiries
-        //        .Where(inq => inqId == null || inqId == inq.Id)
-        //        .Where(inq => userId == null || userId == inq.UserId)
-        //        .ToListAsync();
-        //}
+            foreignInqs = db.ForeignInquiries
+                .Where(x => x.BankId != 1 && inquiryIds.Contains(x.InquiryId)).Select(x => x.ForeignInquiryId.Value);
 
-        //public async Task<Offer?> GetOfferAsync(int userId)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.Offers.Include(x => x.Inquiry).FirstOrDefaultAsync(offer => offer.Inquiry != null && offer.Inquiry.UserId == userId);
-        //}
+            var CURRENTOTHERAPI = new List<Offer>();
+            offers.AddRange(CURRENTOTHERAPI.Where(x => foreignInqs.Contains(x.InquiryId.Value)));
 
-        //public async Task<IEnumerable<OfferHistory>> GetOfferHistoryAsync(int? userId = null)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.OfferHistories.ToListAsync();
-        //}
+            return offers;
+        }
 
-        //public async Task<IEnumerable<Offer>> GetOffersAsync(int? userId = null, int? inquiryId = null, int? bankId = null)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    IQueryable<Offer> filter = db.Offers.Include(offer => offer.Inquiry);
-        //    filter = filter.Include(x => x.Inquiry.ForeignInquiry);
+        public async Task<IEnumerable<Inquiry>> GetUserInquiriesAsync(User user)
+        {
+            using LichvaContext db = new();
+            return await db.Inquiries.Where(x => x.UserId == user.Id).ToListAsync();
+        }
 
-        //    if (userId != null)
-        //        filter = filter.Where(offer => offer.Inquiry != null && offer.Inquiry.UserId == userId);
-        //    if (inquiryId != null)
-        //        filter = filter.Where(offer => offer.Id == inquiryId);
-        //    if (bankId != null)
-        //        filter = filter.Where(offer => offer.Inquiry.ForeignInquiry.BankId == bankId);
+        public async Task<IEnumerable<Offer>> GetEmployeeOffersAsync(User user)
+        {
+            using LichvaContext db = new();
+            var fq = db.ForeignInquiries.Where(x => x.BankId == 1).Select(x => x.InquiryId);
+            return await db.Offers.Where(x => fq.Contains(x.InquiryId.Value)).ToListAsync();
+        }
 
-        //    return await filter.ToListAsync();
-        //}
+        public async Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user)
+        {
+            using LichvaContext db = new();
+            var usersId = db.Users.Where(x => x.Internal.Value).Select(x => x.Id);
 
-        //public async Task<User?> GetUserAsync(int userId)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.Users.FirstOrDefaultAsync(x => x.Id == userId);
-        //}
+            return await db.Inquiries.Where(x => usersId.Contains(x.UserId.Value)).ToListAsync();
+        }
 
-        //public async Task<User?> GetUserAsync(string email)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.Users.FirstOrDefaultAsync(x => x.Email == email);
-        //}
-
-        //public async Task<IEnumerable<User>> GetUsersAsync()
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.Users.ToListAsync();
-        //}
-
-        //public async Task UpdateOfferAsync(Offer offer)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    Offer? current = await db.Offers.FirstOrDefaultAsync(x => x.Id == offer.Id);
-        //    if (current == null) return;
-
-        //    db.Entry(current).CurrentValues.SetValues(offer);
-
-        //    await db.SaveChangesAsync();
-        //}
-
-        //public async Task UpdateUserAsync(UpdateUserDto user)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    User? current = await db.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
-        //    if (current == null) return;
-
-        //    db.Entry(current).CurrentValues.SetValues(user);
-        //    current.Internal = user.Active;
-
-        //    await db.SaveChangesAsync();
-        //}
     }
 }
 

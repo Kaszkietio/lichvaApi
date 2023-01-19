@@ -20,10 +20,12 @@ namespace API
         // Inquiries
         public static GetInquiryDto AsGetDto(this Inquiry inquire)
         {
-            Offer? offer = inquire.Offer;
+            using LichvaContext db = new LichvaContext();
+            Offer? offer = db.Offers.Include(x => x.OfferStatus).FirstOrDefault(x => x.InquiryId == inquire.Id);
 
             GetInquiryDto result = new()
             {
+                CreationDate = inquire.CreationDate,
                 Ammount = inquire.Ammount,
                 Installments = inquire.Installments,
                 StatusId = offer?.StatusId ?? null,
@@ -47,22 +49,26 @@ namespace API
         public static GetOfferDto AsGetDto(this Offer offer)
         {
             using LichvaContext db = new LichvaContext();
+            OfferStatus status = db.OfferStatuses.First(x => x.Id == offer.StatusId);
+            Inquiry inquiry = db.Inquiries.First(x => x.Id == offer.InquiryId);
+            OfferHistory? history = db.OfferHistories.Where(x => x.OfferId == offer.Id).AsEnumerable().MaxBy(x => x.CreationDate);
+            ForeignInquiry? fq = db.ForeignInquiries.FirstOrDefault(x => x.InquiryId == offer.InquiryId);
             GetOfferDto result = new()
             {
                 Id = offer.Id,
                 Percentage = offer.Percentage,
                 MonthlyInstallment = offer.MonthlyInstallment,
-                Ammount = offer.Inquiry.Ammount,
-                Installments = offer.Inquiry.Installments,
+                Ammount = inquiry.Ammount,
+                Installments = inquiry.Installments,
                 StatusId = offer.StatusId,
-                StatusDescription = offer.OfferStatus.Name,
+                StatusDescription = status.Name,
                 InquiryId = offer.InquiryId,
                 CreateDate = offer.CreationDate,
                 UpdateDate = null,
-                ApprovedBy = offer.History.MaxBy(x => x.CreationDate)?.EmployeeId,
+                ApprovedBy = history?.EmployeeId ?? null,
                 DocumentLink = offer.DocumentLink,
                 DocumentLinkValidDate = null,
-                BankId = db.ForeignInquiries.FirstOrDefault(x => x.InquiryId == offer.InquiryId)?.BankId ?? null
+                BankId = fq?.BankId ?? null
             };
             return result;
         }

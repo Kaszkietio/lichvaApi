@@ -1,4 +1,6 @@
-﻿using API.Dtos.User;
+﻿using API.Dtos.Inquiry;
+using API.Dtos.Offer;
+using API.Dtos.User;
 using API.Repositories;
 using BankDataLibrary.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -80,6 +82,48 @@ namespace API.Controllers
             {
                 return StatusCode(500, new { ex.Message });
             }
+        }
+
+        [HttpGet]
+        [Route("inquiries")]
+        public async Task<ActionResult<IEnumerable<GetInquiryDto>>> GetInquiriesAsync(
+            [FromHeader] string authToken
+            )
+        {
+            User? user = await Repository.AuthenticateUserAsync(authToken);
+            if(user == null)
+            {
+                return Unauthorized(new {message = "Not authorized user"});
+            }
+            bool isAuthorized = await Repository.AuthorizeUserAsync(user, "user");
+            if (!isAuthorized)
+                return Unauthorized(new { message = "Not authorized role" });
+
+
+            var offers = await Repository.GetUserInquiriesAsync(user);
+
+            return Ok(offers.Select(x => x.AsGetDto()));
+        }
+
+        [HttpGet]
+        [Route("offers")]
+        public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetOffersLichvaAsync(
+            [FromHeader] string authToken
+            )
+        {
+            User? user = await Repository.AuthenticateUserAsync(authToken);
+            if(user == null)
+            {
+                return Unauthorized(new {message = "Not authorized user"});
+            }
+            bool isAuthorized = await Repository.AuthorizeUserAsync(user, "user");
+            if (!isAuthorized)
+                return Unauthorized(new { message = "Not authorized role" });
+
+
+            var offers = await Repository.GetUserOffersAsync(user);
+
+            return Ok(offers.Select(x => x.AsGetDto()));
         }
     }
 }

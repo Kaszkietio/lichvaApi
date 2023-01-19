@@ -56,32 +56,23 @@ namespace API.Repositories
                     (bool IsRange, IList<string>)? hashFilter = null
             );
         public Task UpdateUserAsync(int id, UpdateUserDto dto);
-        public Task<User> AuthenticateUserAsync(string authToken);
 
-        //////// O L D ////////
 
-        //// Inquiry
-        //public Task<IEnumerable<Inquiry>> GetInquiriesAsync(int? inqId = null, int? userId = null);
-        //public Task CreateInquiryAsync(Inquiry inquiry);
+        // API 3.0
+        // Login
+        public Task<User?> AuthenticateUserAsync(string authToken);
 
-        //// Offer
-        //public Task<Offer?> GetOfferAsync(int userId);
-        //public Task<IEnumerable<Offer>> GetOffersAsync(
-        //    int? userId = null,
-        //    int? inquiryId = null,
-        //    int? bankId = null);
-        //public Task CreateOfferAsync(Offer offer);
-        //public Task UpdateOfferAsync(Offer offer);
+        public Task<bool> AuthorizeUserAsync(User user, string roleName);
 
-        //// OfferHistory
-        //public Task<IEnumerable<OfferHistory>> GetOfferHistoryAsync(int? userId = null);
-        //public Task CreateOfferHistoryAsync(OfferHistory offer);
+        // User
+        public Task<Role?> GetRoleAsync(User user);
 
-        //// User
-        //public Task<User?> GetUserAsync(int userId);
-        //public Task<User?> GetUserAsync(string email);
-        //public Task<IEnumerable<User>> GetUsersAsync();
-        //public Task CreateUserAsync(User user);
-        //public Task UpdateUserAsync(UpdateUserDto user);
+        public Task<IEnumerable<Offer>> GetUserOffersAsync(User user);
+        public Task<IEnumerable<Inquiry>> GetUserInquiriesAsync(User user);
+
+        // EMPLOYEE
+        public Task<IEnumerable<Offer>> GetEmployeeOffersAsync(User user);
+        public Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user);
+
     }
 }
