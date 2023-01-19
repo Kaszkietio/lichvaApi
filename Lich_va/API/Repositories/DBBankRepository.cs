@@ -97,7 +97,10 @@ namespace API.Repositories
                 .ThenInclude(x => x.History)
                 .Include(x => x.Offer)
                 .ThenInclude(x => x.OfferStatus)
-                .Where(x => x.UserId == user.Id);
+                .AsQueryable();
+
+            if(user.RoleId == (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
+                result = result.Where(x => x.UserId == user.Id);
 
 
             if (idFilter.IsRange)
