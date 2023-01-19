@@ -30,7 +30,7 @@ namespace GoogleAuth.Services
 
         private async Task<OnUserCreationDto> FindUserOrAdd(GoogleJsonWebSignature.Payload payload)
         {
-            var user = (await Repository.GetUsersAsync(emailFilter: new List<string> { payload.Email })).FirstOrDefault();
+            var user = (await Repository.GetUsersAsync(emailFilter: (false, new List<string> { payload.Email }))).FirstOrDefault();
             OnUserCreationDto result;
             if (user == null)
             {

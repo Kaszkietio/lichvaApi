@@ -37,7 +37,7 @@ namespace API.Controllers
             {
                 User user = await Repository.AuthenticateUserAsync(authToken);
 
-                Offer? offer = (await Repository.GetOffersAsync(user, idFilter: new List<int> { offerId })).FirstOrDefault();
+                Offer? offer = (await Repository.GetOffersAsync(user, idFilter: (false, new List<int> { offerId }))).FirstOrDefault();
                 if (offer == null)
                 {
                     return NotFound();
@@ -54,24 +54,30 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OfferDto>>> GetAllAsync(
             [FromHeader] string authToken,
-            [FromQuery] IList<int> idFilter,
-            [FromQuery] IList<int> inquiryIdFilter,
-            [FromQuery] IList<DateTime> createDateFilter,
-            [FromQuery] IList<decimal> percentageFilter,
-            [FromQuery] IList<decimal> monthlyInstallmentFilter,
-            [FromQuery] IList<int> statusFilter
+            //[FromQuery] IList<int> idFilter,
+            //[FromQuery] IList<int> inquiryIdFilter,
+            //[FromQuery] IList<DateTime> createDateFilter,
+            //[FromQuery] IList<decimal> percentageFilter,
+            //[FromQuery] IList<decimal> monthlyInstallmentFilter,
+            //[FromQuery] IList<int> statusFilter
+            [FromQuery] string idFilter,
+            [FromQuery] string inquiryIdFilter,
+            [FromQuery] string createDateFilter,
+            [FromQuery] string percentageFilter,
+            [FromQuery] string monthlyInstallmentFilter,
+            [FromQuery] string statusFilter
             )
         {
             try
             {
                 User user = await Repository.AuthenticateUserAsync(authToken);
                 var result = await Repository.GetOffersAsync(user,
-                    idFilter,
-                    inquiryIdFilter,
-                    createDateFilter,
-                    percentageFilter,
-                    monthlyInstallmentFilter,
-                    statusFilter
+                    idFilter.ParseInt(),
+                    inquiryIdFilter.ParseInt(),
+                    createDateFilter.ParseDateTime(),
+                    percentageFilter.ParseDecimal(),
+                    monthlyInstallmentFilter.ParseDecimal(),
+                    statusFilter.ParseInt()
                     );
 
                 return Ok(result.Select(x => x.AsGetDto()));
@@ -95,7 +101,7 @@ namespace API.Controllers
                 User user = await Repository.AuthenticateUserAsync(authToken);
                 Offer? offer = (await Repository.GetOffersAsync(
                     user, 
-                    idFilter: new List<int> { offerId }))
+                    idFilter: (false, new List<int> { offerId })))
                     .FirstOrDefault();
 
                 if( offer == null )
@@ -142,7 +148,7 @@ namespace API.Controllers
                 User user = await Repository.AuthenticateUserAsync(authToken);
                 Offer? offer = (await Repository.GetOffersAsync(
                     user, 
-                    idFilter: new List<int> { offerId }))
+                    idFilter: (false, new List<int> { offerId })))
                     .FirstOrDefault();
 
                 if (offer == null)

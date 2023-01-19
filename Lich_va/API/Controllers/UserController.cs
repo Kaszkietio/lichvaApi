@@ -19,19 +19,44 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetUserDto>>> GetAllAsync(
             [FromHeader] string authToken,
-            [FromQuery] IList<int> idFilter,
-            [FromQuery] IList<DateTime> createDateFilter,
-            [FromQuery] IList<string> emailFilter,
-            [FromQuery] IList<int> roleFilter,
-            [FromQuery] IList<bool> internalFilter,
-            [FromQuery] IList<bool> anonymousFilter,
-            [FromQuery] IList<string> hashFilter
+            //[FromQuery] IList<int> idFilter,
+            //[FromQuery] IList<DateTime> createDateFilter,
+            //[FromQuery] IList<string> emailFilter,
+            //[FromQuery] IList<int> roleFilter,
+            //[FromQuery] IList<bool> internalFilter,
+            //[FromQuery] IList<bool> anonymousFilter,
+            //[FromQuery] IList<string> hashFilter
+            [FromQuery] string idFilter,
+            [FromQuery] string createDateFilter,
+            [FromQuery] string emailFilter,
+            [FromQuery] string roleFilter,
+            [FromQuery] string internalFilter,
+            [FromQuery] string anonymousFilter,
+            [FromQuery] string hashFilter
             )
         {
             try
             {
+                var idFilterS = idFilter.ParseInt();
+                var createDateS = createDateFilter.ParseDateTime();
+                var emailS = emailFilter.Parse();
+                var roleS = roleFilter.ParseInt();
+                var internalS = internalFilter.ParseBool();
+                var anonymousS = anonymousFilter.ParseBool();
+                var hashS = hashFilter.Parse();
                 await Repository.AuthenticateUserAsync(authToken);
-                return Ok((await Repository.GetUsersAsync()).Select(x => x.AsGetDto()));
+                return Ok(
+                    (await Repository.GetUsersAsync(
+                        idFilterS, 
+                        createDateS, 
+                        roleS, 
+                        internalS, 
+                        anonymousS, 
+                        emailS, 
+                        hashS)
+                    )
+                    .Select(x => x.AsGetDto())
+               );
             }
             catch (Exception ex)
             {
