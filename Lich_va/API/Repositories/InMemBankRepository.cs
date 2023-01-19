@@ -29,6 +29,11 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<bool> AuthorizeUserAsync(User user, string roleName)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<OnInquiryCreationDto> CreateInquiry(CreateInquiryDto dto)
         {
             throw new NotImplementedException();
@@ -90,6 +95,16 @@ namespace API.Repositories
         }
 
         public Task<IEnumerable<Bank>> GetBanksAsync(IList<string>? nameList = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Offer>> GetEmployeeOffersAsync(User user)
         {
             throw new NotImplementedException();
         }
@@ -164,6 +179,11 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<Role?> GetRoleAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<Role>> GetRolesAsync()
         {
             throw new NotImplementedException();
@@ -175,6 +195,16 @@ namespace API.Repositories
         }
 
         public Task<User?> GetUserAsync(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Inquiry>> GetUserInquiriesAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Offer>> GetUserOffersAsync(User user)
         {
             throw new NotImplementedException();
         }
