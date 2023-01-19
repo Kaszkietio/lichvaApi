@@ -28,6 +28,7 @@ namespace API.Dtos.Inquiry
         public string? Name { get; set; }
 
         public string? Description { get; set; }
+        public int? IncomeLevel { get; set; }
 
         public DateTime? JobStartDate { get; set; }
         public DateTime? JobEndDate { get; set; }

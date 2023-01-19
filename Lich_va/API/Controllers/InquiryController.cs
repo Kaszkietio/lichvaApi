@@ -1,4 +1,5 @@
 ﻿using API.Dtos.Inquiry;
+using API.Dtos.User;
 using API.Entities;
 using API.Helpers;
 using API.Repositories;
@@ -104,6 +105,40 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Route("anonymous")]
+        [AllowAnonymous]
+        public async Task<ActionResult<OnInquiryCreationDto>> PostAnonymous(
+            [FromQuery] string email,
+            CreateInquiryDto dto
+            )
+        {
+            try
+            {
+                CreateUserDto createUser = new CreateUserDto
+                {
+                    Active = true,
+                    Anonymous = true,
+                    Email = email,
+                    FirstName = dto.PersonalData.FirstName,
+                    LastName = dto.PersonalData.LastName,
+                    IdNumber = dto.GovernmentDocument.Number,
+                    IdTypeId = dto.GovernmentDocument.TypeId,
+                    IncomeLevel = dto.JobDetails.IncomeLevel,
+                    JobTypeId = dto.JobDetails.TypeId,
+                    RoleId = (await Repository.GetRolesAsync()).First(x => x.Name == "user").Id,
+                };
+                var user = await Repository.CreateUserAsync(createUser);
+
+                var result = await Repository.CreateInquiryAsync(dto, user.Id);
+                return Ok(new { message = "Inquiry created" });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, new {ex.Message});
             }
         }
     }
