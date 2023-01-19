@@ -5,8 +5,10 @@ using API.Dtos.Offer;
 using API.Dtos.User;
 using API.Entities;
 using API.Helpers;
+using BankDataLibrary.Config;
 using BankDataLibrary.Entities;
 using Microsoft.AspNetCore.Routing.Template;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.Remoting;
 using System.Text;
 
@@ -44,13 +46,14 @@ namespace API
         // Offers
         public static GetOfferDto AsGetDto(this Offer offer)
         {
+            using LichvaContext db = new LichvaContext();
             GetOfferDto result = new()
             {
                 Id = offer.Id,
                 Percentage = offer.Percentage,
                 MonthlyInstallment = offer.MonthlyInstallment,
-                RequestedValue = offer.Inquiry.Ammount,
-                RequestedPeriodInMonth = offer.Inquiry.Installments,
+                Ammount = offer.Inquiry.Ammount,
+                Installments = offer.Inquiry.Installments,
                 StatusId = offer.StatusId,
                 StatusDescription = offer.OfferStatus.Name,
                 InquiryId = offer.InquiryId,
@@ -59,6 +62,7 @@ namespace API
                 ApprovedBy = offer.History.MaxBy(x => x.CreationDate)?.EmployeeId,
                 DocumentLink = offer.DocumentLink,
                 DocumentLinkValidDate = null,
+                BankId = db.ForeignInquiries.FirstOrDefault(x => x.InquiryId == offer.InquiryId)?.BankId ?? null
             };
             return result;
         }
