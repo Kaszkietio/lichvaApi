@@ -100,7 +100,7 @@ namespace API.Repositories
                 .Include(x => x.ForeignInquiry)
                 .AsQueryable();
 
-            if(user.RoleId == (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
+            if(user.RoleId != (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
                 result = result.Where(x => x.UserId == user.Id);
 
 
@@ -187,7 +187,16 @@ namespace API.Repositories
             // TODO:
             Task createOfferTast = Task.Factory.StartNew(() => CreateOfferTask(inquiry.Id));
             //createOfferTast.Start();
-            
+
+            ForeignInquiry fq = new ForeignInquiry
+            {
+                BankId = (await db.Banks.FirstAsync(x => x.Name == "Lichva")).Id,
+                InquiryId = inquiry.Id,
+                ForeignInquiryId = null
+            };
+
+            await db.ForeignInquiries.AddAsync(fq);
+            await db.SaveChangesAsync();
 
             return db.Inquiries
                 .Include(x => x.Offer)
@@ -248,7 +257,7 @@ namespace API.Repositories
                 .Include(x => x.OfferStatus)
                 .AsQueryable();
 
-            if(user.Role.Id != (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
+            if(user.RoleId != (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
                 result = result.Where(x => x.Inquiry.UserId == user.Id);
 
             if (idFilter.IsRange)
