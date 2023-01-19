@@ -97,6 +97,7 @@ namespace API.Repositories
                 .ThenInclude(x => x.History)
                 .Include(x => x.Offer)
                 .ThenInclude(x => x.OfferStatus)
+                .Include(x => x.ForeignInquiry)
                 .AsQueryable();
 
             if(user.RoleId == (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
