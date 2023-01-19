@@ -242,7 +242,10 @@ namespace API.Repositories
                 .Include(x => x.Inquiry)
                 .Include(x => x.History)
                 .Include(x => x.OfferStatus)
-                .Where(x => x.Inquiry.UserId == user.Id);
+                .AsQueryable();
+
+            if(user.Role.Id != (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
+                result = result.Where(x => x.Inquiry.UserId == user.Id);
 
             if (idFilter.IsRange)
                 result = result.Where(x => idFilter.arr.First() <= x.Id && x.Id <= idFilter.arr.Last());
