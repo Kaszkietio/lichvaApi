@@ -7,7 +7,6 @@ namespace BankDataLibrary.Entities
     [Table("offers", Schema = LichvaContext.SchemaName)]
     public class Offer
     {
-        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; init; }
 
@@ -19,9 +18,11 @@ namespace BankDataLibrary.Entities
 
         public decimal? Percentage { get; set; }
 
-        public decimal? MonthlyInstallments { get; set; }   
+        [Column("monthlyInstallment")]
+        public decimal? MonthlyInstallment { get; set; }
 
-        public int? Status { get; set; }
+        [Column("status")]
+        public int? StatusId { get; set; }
 
         [Column("document_link")]
         public string? DocumentLink { get; set; }

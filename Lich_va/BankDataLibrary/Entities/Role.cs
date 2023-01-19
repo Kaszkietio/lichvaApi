@@ -12,7 +12,6 @@ namespace BankDataLibrary.Entities
     [Table("roles", Schema = LichvaContext.SchemaName)]
     public class Role
     {
-        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 

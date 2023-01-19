@@ -12,7 +12,6 @@ namespace BankDataLibrary.Entities
     [Table("offer_status", Schema = LichvaContext.SchemaName)]
     public class OfferStatus
     {
-        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } 
 

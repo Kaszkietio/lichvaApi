@@ -1,4 +1,4 @@
-﻿using API.Dtos;
+﻿using API.Dtos.User;
 using API.Repositories;
 using BankDataLibrary.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,17 +16,17 @@ namespace API.Controllers
         IBankRepository Repository { get; init; }
         public UserController(IBankRepository repo) { Repository = repo; }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllAsync()
-        {
-            return Ok((await Repository.GetUsersAsync()).Select(x => x.AsDto()));
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<GetUserDto>>> GetAllAsync()
+        //{
+        //    return Ok((await Repository.GetUsersAsync()).Select(x => x.AsDto()));
+        //}
 
-        [HttpPut]
-        public async Task<ActionResult> Update([FromBody]UpdateUserDto user)
-        {
-            await Repository.UpdateUserAsync(user);
-            return Ok();
-        }
+        //[HttpPut]
+        //public async Task<ActionResult> Update([FromBody]UpdateUserDto user)
+        //{
+        //    await Repository.UpdateUserAsync(user);
+        //    return Ok();
+        //}
     }
 }

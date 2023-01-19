@@ -63,7 +63,7 @@ namespace BankDataLibrary.Config
             builder.Entity<Offer>()
                 .HasOne(offer => offer.OfferStatus)
                 .WithMany(status => status.Offers)
-                .HasForeignKey(offer => offer.Status);
+                .HasForeignKey(offer => offer.StatusId);
             
             // Inquiry inf-1 User
             builder.Entity<Inquiry>()
@@ -109,13 +109,13 @@ namespace BankDataLibrary.Config
 
             // User inf-1 JobType
             builder.Entity<User>()
-                .HasOne(user => user.Job)
+                .HasOne(user => user.JobType)
                 .WithMany(job => job.Users)
                 .HasForeignKey(user => user.JobTypeId);
 
             // User inf-1 IdType
             builder.Entity<User>()
-                .HasOne(user => user.IDType)
+                .HasOne(user => user.IdType)
                 .WithMany(type => type.Users)
                 .HasForeignKey(user => user.IdTypeId);
 

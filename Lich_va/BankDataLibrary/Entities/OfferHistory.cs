@@ -7,7 +7,6 @@ namespace BankDataLibrary.Entities
     [Table("offer_history", Schema = LichvaContext.SchemaName)]
     public class OfferHistory
     {
-        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 

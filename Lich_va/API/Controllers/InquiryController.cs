@@ -1,4 +1,6 @@
-﻿using API.Dtos;
+﻿using API.Dtos.Inquiry;
+using API.Entities;
+using API.Helpers;
 using API.Repositories;
 using BankDataLibrary.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,45 +24,75 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<InquiryDto>>> GetAll(
-            int? inquiryId = null,
-            int? userId = null
+        public async Task<ActionResult<IEnumerable<GetInquiryDto>>> GetAll(
+            [FromHeader] string authToken,
+            [FromQuery] IList<int> idFilter,
+            [FromQuery] IList<DateTime> createDateFilter,
+            [FromQuery] IList<int> ammountFilter,
+            [FromQuery] IList<int> installmentFilter,
+            [FromQuery] IList<int> bankIdFilter
             )
         {
-            return Ok((await Repository.GetInquiriesAsync(inquiryId, userId))
-                                       .Select(x => x.AsDto()));
+            try
+            {
+                User user = await Repository.AuthenticateUserAsync(authToken);
+                
+                var result = await Repository.GetInquiriesAsync(user, idFilter, createDateFilter, ammountFilter, installmentFilter, bankIdFilter);
+                return Ok(result.Select(x => x.AsGetDto()));
+            }
+            catch (Exception ex) 
+            {
+                return StatusCode(500, new { ex.Message });
+            }
+
         }
 
         [HttpGet]
         [Route("{inquiryId}")]
-        public async Task<ActionResult<InquiryDto>> Get(int inquiryId)
+        public async Task<ActionResult<GetInquiryDto>> Get(
+            [FromHeader] string authToken,
+            int inquiryId
+            )
         {
-            Inquiry? res = 
-                (await Repository.GetInquiriesAsync(inquiryId, null))
-                                 .FirstOrDefault();
-
-            if (res == null)
+            try
             {
-                return NoContent();
+                User user = await Repository.AuthenticateUserAsync(authToken);
+                
+                Inquiry? res =
+                    (await Repository.GetInquiriesAsync(user, idFilter: new List<int> { inquiryId }))
+                                     .FirstOrDefault();
+
+                if (res == null)
+                {
+                    return NoContent();
+                }
+
+                return Ok(res.AsGetDto());
+            }
+            catch (Exception ex )
+            {
+                return StatusCode(500, new { ex.Message });
             }
 
-            return Ok(res.AsDto());
         }
 
         [HttpPost]
-        public async Task<ActionResult<InquiryDto>> Post(CreateInquiryDto createInquiryDto)
+        public async Task<ActionResult<OnInquiryCreationDto>> Post(
+            [FromHeader] string authToken,
+            CreateInquiryDto createInquiryDto
+            )
         {
-            Inquiry res = new()
+            try
             {
-                CreationDate = DateTime.Now,
-                UserId = createInquiryDto.UserId,
-                Installments = createInquiryDto.Installments,
-                Ammount = createInquiryDto.Ammount,
-            };
-
-            await Repository.CreateInquiryAsync(res);
-
-            return CreatedAtAction(nameof(Get), new { inquiryId = res.Id }, res.AsDto());
+                User user = await Repository.AuthenticateUserAsync(authToken);
+                
+                var res = await Repository.CreateInquiryAsync(createInquiryDto, user.Id);
+                return CreatedAtAction(nameof(Get), new { inquiryId = res.InquireId }, res);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

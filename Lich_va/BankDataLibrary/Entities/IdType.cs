@@ -12,7 +12,6 @@ namespace BankDataLibrary.Entities
     [Table("id_types", Schema = LichvaContext.SchemaName)]
     public class IdType
     {
-        //[Key]
         public int Id { get; set; }
 
         public string? Name { get; set; }

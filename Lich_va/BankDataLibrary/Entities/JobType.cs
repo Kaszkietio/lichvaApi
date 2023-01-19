@@ -12,7 +12,6 @@ namespace BankDataLibrary.Entities
     [Table("job_types", Schema = LichvaContext.SchemaName)]
     public class JobType
     {
-        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         

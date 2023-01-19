@@ -12,7 +12,6 @@ namespace BankDataLibrary.Entities
     [Table("foreign_inquiries", Schema = LichvaContext.SchemaName)]
     public class ForeignInquiry
     {
-        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 

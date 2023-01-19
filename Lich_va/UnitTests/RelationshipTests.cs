@@ -20,7 +20,7 @@ namespace UnitTests
                 .FirstOrDefault(user => user.Id == 1);
             if (q == null) return;
 
-            foreach(var inq in q.Inquiries)
+            foreach (var inq in q.Inquiries)
                 Console.WriteLine(inq.Id);
         }
 
@@ -31,100 +31,121 @@ namespace UnitTests
             var q = db
                 .Inquiries
                 .Include(x => x.User)
-                .First(inq => inq.UserId == 1);
-            
+                .First(inq => inq.UserId != null);
+
             if (q == null) return;
             Console.WriteLine(q.User.Id);
         }
 
         [TestMethod]
-        public void UserOffer()
+        public void InquiryOffer()
         {
             using LichvaContext db = new LichvaContext();
-            var q = db.Users
-                .Include(x => x.Offers)
-                .FirstOrDefaultAsync(x => x.Id == 1);
+            var q = db.Inquiries
+                .Include(x => x.Offer)
+                .First(x => x.Offer != null);
 
             if (q == null) return;
-            q.Wait();
-            
-            if(q.Result == null) return;
-
-            foreach(var inq in q.Result.Offers)
-                Console.WriteLine(inq.Id);
+            Console.WriteLine(q.Offer.Id);
         }
 
         [TestMethod]
-        public void OfferUser()
+        public void OfferInquiry()
         {
             using LichvaContext db = new LichvaContext();
             var q = db
                 .Offers
-                .Include(x => x.User)
-                .First(inq => inq.UserId == 1);
-            
+                .Include(x => x.Inquiry)
+                .First(inq => inq.InquiryId == 1);
+
             if (q == null) return;
-            Console.WriteLine(q.User.Id);
+            Console.WriteLine(q.Inquiry.Id);
         }
 
         [TestMethod]
-        public void BankOffer()
+        public void Inquiry_ForeingInq()
+        {
+            using LichvaContext db = new LichvaContext();
+            var q = db.ForeignInquiries
+                .Include(x => x.Inquiry)
+                .FirstOrDefault(x => x.Inquiry != null);
+
+            if (q == null) return;
+            Console.WriteLine(q.Inquiry.Id);
+        }
+
+        [TestMethod]
+        public void ForeignInq_Inquiry()
+        {
+            using LichvaContext db = new LichvaContext();
+            var q = db
+                .Inquiries
+                .Include(x => x.ForeignInquiry)
+                .First(inq => inq.ForeignInquiry != null);
+
+            if (q == null) return;
+            Console.WriteLine(q.ForeignInquiry.Id);
+        }
+
+
+        [TestMethod]
+        public void Bank_ForInq()
         {
             using LichvaContext db = new LichvaContext();
             var q = db.Banks
-                .Include(x => x.Offers)
-                .FirstOrDefaultAsync(x => x.Id == 1);
+                .Include(x => x.ForeignInquiries)
+                .FirstOrDefaultAsync();
 
             if (q == null) return;
             q.Wait();
-            
-            if(q.Result == null) return;
 
-            foreach(var inq in q.Result.Offers)
+            if (q.Result == null) return;
+
+            foreach (var inq in q.Result.ForeignInquiries)
                 Console.WriteLine(inq.Id);
         }
 
         [TestMethod]
-        public void OfferBank()
+        public void ForInqBank()
         {
             using LichvaContext db = new LichvaContext();
             var q = db
-                .Offers
+                .ForeignInquiries
                 .Include(x => x.Bank)
-                .First(inq => inq.BankId == 1);
-            
+                .First();
+
             if (q == null) return;
             Console.WriteLine(q.Bank.Id);
         }
 
         [TestMethod]
-        public void PlatfomOffer()
+        public void OfferStatus_Offer()
         {
             using LichvaContext db = new LichvaContext();
-            var q = db.Banks
-                .Include(x => x.PlatformOffers)
-                .FirstOrDefaultAsync(x => x.Id == 2);
+            var q = db.OfferStatuses
+                .Include(x => x.Offers)
+                .FirstOrDefaultAsync();
 
             if (q == null) return;
             q.Wait();
-            
-            if(q.Result == null) return;
 
-            foreach(var inq in q.Result.PlatformOffers)
+            if (q.Result == null) return;
+
+            foreach (var inq in q.Result.Offers)
                 Console.WriteLine(inq.Id);
         }
 
         [TestMethod]
-        public void OfferPlatform()
+        public void Offer_OfferStatus()
         {
             using LichvaContext db = new LichvaContext();
             var q = db
                 .Offers
-                .Include(x => x.Platform)
-                .First(inq => inq.PlatformId == 2);
-            
+                .Include(x => x.OfferStatus)
+                .First(inq => inq.OfferStatus != null);
+
             if (q == null) return;
-            Console.WriteLine(q.Platform.Id);
+            Console.WriteLine(q.OfferStatus.Id);
         }
 
         [TestMethod]
@@ -133,14 +154,14 @@ namespace UnitTests
             using LichvaContext db = new LichvaContext();
             var q = db.Users
                 .Include(x => x.OfferHistory)
-                .FirstOrDefaultAsync(x => x.Id == 1);
+                .FirstOrDefaultAsync();
 
             if (q == null) return;
             q.Wait();
-            
-            if(q.Result == null) return;
 
-            foreach(var inq in q.Result.OfferHistory)
+            if (q.Result == null) return;
+
+            foreach (var inq in q.Result.OfferHistory)
                 Console.WriteLine(inq.Id);
         }
 
@@ -151,8 +172,8 @@ namespace UnitTests
             var q = db
                 .OfferHistories
                 .Include(x => x.Employee)
-                .First(inq => inq.EmployeeId == 1);
-            
+                .First(inq => inq.EmployeeId != null);
+
             if (q == null) return;
             Console.WriteLine(q.Employee.Id);
         }
@@ -163,14 +184,14 @@ namespace UnitTests
             using LichvaContext db = new LichvaContext();
             var q = db.Offers
                 .Include(x => x.History)
-                .FirstOrDefaultAsync(x => x.Id == 1);
+                .FirstOrDefaultAsync();
 
             if (q == null) return;
             q.Wait();
-            
-            if(q.Result == null) return;
 
-            foreach(var inq in q.Result.History)
+            if (q.Result == null) return;
+
+            foreach (var inq in q.Result.History)
                 Console.WriteLine(inq.Id);
         }
 
@@ -181,40 +202,109 @@ namespace UnitTests
             var q = db
                 .OfferHistories
                 .Include(x => x.Offer)
-                .First(inq => inq.OfferId == 1);
-            
+                .First(inq => inq.OfferId != null);
+
             if (q == null) return;
             Console.WriteLine(q.Offer.Id);
         }
 
         [TestMethod]
-        public void User_LoginHistory()
+        public void User_IdType()
         {
             using LichvaContext db = new LichvaContext();
             var q = db.Users
-                .Include(x => x.Logins)
-                .FirstOrDefaultAsync(x => x.Id == 1);
+                .Include(x => x.IdType)
+                .First(x => x.IdTypeId != null);
 
             if (q == null) return;
-            q.Wait();
-            
-            if(q.Result == null) return;
-
-            foreach(var inq in q.Result.Logins)
-                Console.WriteLine(inq.Id);
+            Console.WriteLine(q.IdType.Id);
         }
 
         [TestMethod]
-        public void LoginHistory_User()
+        public void IdType_User()
         {
             using LichvaContext db = new LichvaContext();
             var q = db
-                .LoginHistories
-                .Include(x => x.User)
-                .First(inq => inq.UserId == 1);
-            
-            if (q == null) return;
-            Console.WriteLine(q.User.Id);
+                .IdTypes
+                .Include(x => x.Users)
+                .First(x => x.Users.Count != 0);
+
+            foreach (var inq in q.Users)
+                Console.WriteLine(inq.Id);
         }
+        [TestMethod]
+        public void User_JobType()
+        {
+            using LichvaContext db = new LichvaContext();
+            var q = db.Users
+                .Include(x => x.JobType)
+                .First(x => x.JobTypeId != null);
+
+            if (q == null) return;
+            Console.WriteLine(q.JobType.Id);
+        }
+
+        [TestMethod]
+        public void JobType_User()
+        {
+            using LichvaContext db = new LichvaContext();
+            var q = db
+                .JobTypes
+                .Include(x => x.Users)
+                .First(x => x.Users.Count != 0);
+
+            foreach (var inq in q.Users)
+                Console.WriteLine(inq.Id);
+        }
+        [TestMethod]
+        public void User_Role()
+        {
+            using LichvaContext db = new LichvaContext();
+            var q = db.Users
+                .Include(x => x.Role)
+                .First(x => x.RoleId != null);
+
+            if (q == null) return;
+            Console.WriteLine(q.Role.Id);
+        }
+
+        [TestMethod]
+        public void Role_User()
+        {
+            using LichvaContext db = new LichvaContext();
+            var q = db
+                .Roles
+                .Include(x => x.Users)
+                .First(x => x.Users.Count != 0);
+
+            foreach (var inq in q.Users)
+                Console.WriteLine(inq.Id);
+        }
+        [TestMethod]
+        public void OfferHistory_OfferStatus()
+        {
+            using LichvaContext db = new LichvaContext();
+            var q = db.OfferHistories
+                .Include(x => x.Status)
+                .First(x => x.StatusId != null);
+
+            if (q == null) return;
+            Console.WriteLine(q.Status.Id);
+        }
+
+        [TestMethod]
+        public void OfferStatus_OfferHistory()
+        {
+            using LichvaContext db = new LichvaContext();
+            var q = db
+                .OfferStatuses
+                .Include(x => x.OfferHistories)
+                .First(x => x.OfferHistories.Count != 0);
+
+            foreach (var inq in q.OfferHistories)
+                Console.WriteLine(inq.Id);
+        }
+
+
     }
 }

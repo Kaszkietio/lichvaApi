@@ -7,7 +7,6 @@ namespace BankDataLibrary.Entities
     [Table("users", Schema = LichvaContext.SchemaName)]
     public class User
     {
-        //[Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
@@ -43,8 +42,8 @@ namespace BankDataLibrary.Entities
         [Column("id_number")]
         public string? IdNumber { get; set; }
 
-        public virtual IdType IDType { get; set; }
-        public virtual JobType Job { get; set; }
+        public virtual IdType IdType { get; set; }
+        public virtual JobType JobType { get; set; }
         public virtual Role Role { get; set; }
 
         public virtual ICollection<Inquiry> Inquiries { get; set; }
