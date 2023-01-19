@@ -23,7 +23,7 @@ namespace API
                 Ammount = inquire.Ammount,
                 Installments = inquire.Installments,
                 StatusId = offer?.StatusId ?? null,
-                StatusDescription = offer.OfferStatus?.Name ?? null,
+                StatusDescription = offer?.OfferStatus.Name ?? null,
                 Offer = offer?.AsGetDto() ?? null,
             };
             return result;
