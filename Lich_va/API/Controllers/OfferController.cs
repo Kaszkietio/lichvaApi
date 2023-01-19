@@ -60,12 +60,12 @@ namespace API.Controllers
             //[FromQuery] IList<decimal> percentageFilter,
             //[FromQuery] IList<decimal> monthlyInstallmentFilter,
             //[FromQuery] IList<int> statusFilter
-            [FromQuery] string idFilter,
-            [FromQuery] string inquiryIdFilter,
-            [FromQuery] string createDateFilter,
-            [FromQuery] string percentageFilter,
-            [FromQuery] string monthlyInstallmentFilter,
-            [FromQuery] string statusFilter
+            [FromQuery] string? idFilter,
+            [FromQuery] string? inquiryIdFilter,
+            [FromQuery] string? createDateFilter,
+            [FromQuery] string? percentageFilter,
+            [FromQuery] string? monthlyInstallmentFilter,
+            [FromQuery] string? statusFilter
             )
         {
             try

@@ -344,7 +344,7 @@ namespace API.Repositories
                 CreationDate = DateTime.Now,
                 RoleId = dto.RoleId,
                 Hash = dto.Email,
-                Internal = true,
+                Internal = dto.Active,
                 Anonymous= dto.Anonymous,
                 Email = dto.Email,
                 FirstName = dto.FirstName,
@@ -482,6 +482,7 @@ namespace API.Repositories
             }
 
             db.Entry(user).CurrentValues.SetValues(dto);
+            user.Internal = dto.Active;
             await db.SaveChangesAsync();
         }
 
