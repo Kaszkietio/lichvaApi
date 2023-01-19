@@ -26,13 +26,13 @@ namespace API.Controllers
             //[FromQuery] IList<bool> internalFilter,
             //[FromQuery] IList<bool> anonymousFilter,
             //[FromQuery] IList<string> hashFilter
-            [FromQuery] string idFilter,
-            [FromQuery] string createDateFilter,
-            [FromQuery] string emailFilter,
-            [FromQuery] string roleFilter,
-            [FromQuery] string internalFilter,
-            [FromQuery] string anonymousFilter,
-            [FromQuery] string hashFilter
+            [FromQuery] string? idFilter,
+            [FromQuery] string? createDateFilter,
+            [FromQuery] string? emailFilter,
+            [FromQuery] string? roleFilter,
+            [FromQuery] string? internalFilter,
+            [FromQuery] string? anonymousFilter,
+            [FromQuery] string? hashFilter
             )
         {
             try
