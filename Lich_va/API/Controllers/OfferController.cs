@@ -28,7 +28,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("{offerId}")]
-        public async Task<ActionResult<OfferDto>> GetAsync(
+        public async Task<ActionResult<GetOfferDto>> GetAsync(
             [FromHeader] string authToken,
             int offerId
             )
@@ -52,7 +52,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OfferDto>>> GetAllAsync(
+        public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetAllAsync(
             [FromHeader] string authToken,
             //[FromQuery] IList<int> idFilter,
             //[FromQuery] IList<int> inquiryIdFilter,
