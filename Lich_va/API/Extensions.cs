@@ -26,7 +26,7 @@ namespace API
                 Installments = inquire.Installments,
                 StatusId = offer?.StatusId ?? null,
                 StatusDescription = offer?.OfferStatus.Name ?? null,
-                Offer = offer?.AsGetDto() ?? null,
+                OfferId = offer?.Id ?? null,
             };
             return result;
         }
@@ -87,6 +87,7 @@ namespace API
                 LastName = user.LastName,
                 RoleId = user.RoleId,
                 Active = user.Internal,
+                Anonymous = user.Anonymous,
             };
             return result;
         }

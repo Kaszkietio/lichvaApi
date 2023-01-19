@@ -32,7 +32,7 @@ namespace GoogleAuth.Services
         {
             var user = (await Repository.GetUsersAsync(emailFilter: (false, new List<string> { payload.Email }))).FirstOrDefault();
             OnUserCreationDto result;
-            if (user == null)
+            if (user == null || (!user.Internal.Value && !user.Anonymous.Value))
             {
                 var newUser = new CreateUserDto()
                 {
@@ -40,7 +40,7 @@ namespace GoogleAuth.Services
                     JobTypeId = (await Repository.GetJobTypesAsync()).First(x => x.Name == "none").Id,
                     IdTypeId = (await Repository.GetJobTypesAsync()).First(x => x.Name == "none").Id,    
                     Active = false,
-                    Anonymous = false,
+                    Anonymous = true,
                     Email = payload.Email,
                     FirstName = payload.GivenName ?? string.Empty,
                     LastName = payload.FamilyName ?? string.Empty,
