@@ -1,4 +1,4 @@
-﻿using API.Dtos;
+﻿using API.Dtos.User;
 using API.Entities;
 using API.Helpers;
 using Google.Apis.Auth;
@@ -38,11 +38,11 @@ namespace API.Controllers
 
                 var claims = new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, Security.Encrypt(AppSettings.appSettings.JwtEmailEncryption, user.Email)),
+                    new Claim(JwtRegisteredClaimNames.Sub, Security.Encrypt(AppSettings.Instance.JwtEmailEncryption, user.Data.Email)),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 };
 
-                var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AppSettings.appSettings.JwtSecret));
+                var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(AppSettings.Instance.JwtSecret));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                 var token = new JwtSecurityToken(string.Empty,
@@ -55,15 +55,15 @@ namespace API.Controllers
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
-                    user = user.AsDto(),
+                    user,
+                    authToken = Security.Encrypt(AppSettings.Instance.HashKey, user.Data.Email),
                 });
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                BadRequest(ex.Message);
+                return BadRequest(new { ex.Message });
             }
-            return BadRequest();
         }
     }
 }

@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 string json = File.ReadAllText(@"appsettings.json");
 JObject o = JObject.Parse(@json);
-AppSettings.appSettings = JsonConvert.DeserializeObject<AppSettings>(o["AppSettings"].ToString());
+AppSettings.Instance = JsonConvert.DeserializeObject<AppSettings>(o["AppSettings"].ToString());
 
 
 builder.Services.AddCors(opts =>

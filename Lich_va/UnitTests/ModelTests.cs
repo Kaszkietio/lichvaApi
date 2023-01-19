@@ -1,6 +1,7 @@
 
-using API;
 using BankDataLibrary.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace UnitTests
 {
@@ -14,7 +15,7 @@ namespace UnitTests
             Bank test = new Bank
             {
                 CreationDate = DateTime.Now,
-                Name = "random2",
+                Name = "Lichva",
             };
             db.Banks.Add(test);
             db.SaveChanges();
@@ -27,6 +28,54 @@ namespace UnitTests
             db.Banks.Remove(test);
             db.SaveChanges();
         }
+
+        [TestMethod]
+        public void ForeignInquiryTest()
+        {
+            using LichvaContext db = new();
+
+            Inquiry tmp = new Inquiry
+            {
+                CreationDate = DateTime.Now,
+                UserId = db.Users.First().Id,
+                Ammount = 1,
+                Installments = 1,
+            };
+
+            db.Inquiries.Add(tmp);
+            db.SaveChanges();
+
+            ForeignInquiry test = new ForeignInquiry
+            {
+                BankId = db.Banks.First().Id,
+                InquiryId = tmp.Id,
+                ForeignInquiryId = null,
+            };
+
+            db.ForeignInquiries.Add(test);
+            db.SaveChanges();
+
+            foreach(var fq in db.ForeignInquiries)
+            {
+                Console.WriteLine(
+                    $"{fq.Id} " + 
+                    $"{fq.BankId} " + 
+                    $"{fq.InquiryId} " + 
+                    $"{fq.ForeignInquiryId}"
+                    );
+            }
+        }
+
+        [TestMethod]
+        public void IdTypeTest()
+        {
+            using LichvaContext db = new();
+            foreach(var type in db.IdTypes)
+            {
+                Console.WriteLine($"{type.Id}:{type.Name}");
+            }
+        }
+
         [TestMethod]
         public void InquiriesTest()
         {
@@ -34,7 +83,7 @@ namespace UnitTests
             Inquiry test = new Inquiry
             {
                 CreationDate = DateTime.Now,
-                UserId = 1,
+                UserId = db.Users.First().Id,
                 Ammount = 150,
                 Installments = 10,
             };
@@ -46,8 +95,19 @@ namespace UnitTests
                 Console.WriteLine($"{inq.Id}, {inq.UserId}, {inq.CreationDate}, {inq.Ammount}, {inq.Installments}");
             }
 
-            db.Inquiries.Remove(test);
-            db.SaveChanges();
+            //db.Inquiries.Remove(test);
+            //db.SaveChanges();
+        }
+
+        [TestMethod]
+        public void JobTypeTest()
+        {
+            using LichvaContext db = new();
+
+            foreach(var type in db.JobTypes)
+            {
+                Console.WriteLine($"{type.Id}:{type.Name}:{type.Description}");
+            }
         }
 
         [TestMethod]
@@ -57,84 +117,44 @@ namespace UnitTests
             Offer test = new Offer()
             {
                 CreationDate = DateTime.Now,
-                UserId = 1,
-                BankId = 1,
-                PlatformId = 2,
-                Ammount = 150,
-                Installments = 10,
-                Status = Category.OfferStatusCaregories.First().Name
+                InquiryId = db.Inquiries.First().Id,
+                Percentage = 100,
+                MonthlyInstallment = 10,
+                StatusId = 1,
+                DocumentLink = null,
             };
             db.Offers.Add(test);
             db.SaveChanges();
 
             foreach (Offer off in db.Offers)
             {
-                Console.WriteLine($"{off.Id}, " +
-                    $"{off.UserId}, " +
-                    $"{off.CreationDate}, " +
-                    $"{off.Ammount}, " +
-                    $"{off.Installments}, " +
-                    $"{off.Status}," +
-                    $"{off.PlatformId}," +
-                    $"{off.BankId},");
-            }
-
-            db.Offers.Remove(test); 
-            db.SaveChanges();
-        }
-
-        [TestMethod]
-        public void UserTest()
-        {
-            using LichvaContext db = new();
-            User test = new User()
-            {
-                CreationDate = DateTime.Now,
-                Role = Category.UserRoleCategories.First().Name,
-                Hash = "h4shT3sT3=2",
-                Internal = false,
-                Email = "testmail@wowo.com",
-                FirstName = "Steve",
-                LastName = "Stevens",
-                JobType = Category.UserJobCategories.First().Name,
-                IncomeLevel = 1000,
-                IdType = Category.UserIdTypeCategories.First().Name,
-                IdNumber = "",
-            };
-            db.Users.Add(test);
-            db.SaveChanges();
-
-            foreach (User x in db.Users)
-            {
                 Console.WriteLine(
-                    $"{x.Id}, " +
-                    $"{x.CreationDate}, " +
-                    $"{x.Role}, " +
-                    $"{x.Hash}, " +
-                    $"{x.Internal}, " +
-                    $"{x.Email}, " +
-                    $"{x.FirstName}, " +
-                    $"{x.LastName}, " +
-                    $"{x.JobType}, " +
-                    $"{x.IncomeLevel}, " +
-                    $"{x.IdType}, " +
-                    $"{x.IdNumber}"
+                    $"{off.Id} " +
+                    $"{off.CreationDate} " +
+                    $"{off.InquiryId} " + 
+                    $"{off.Percentage} " + 
+                    $"{off.MonthlyInstallment} " + 
+                    $"{off.StatusId} " + 
+                    $"{off.DocumentLink} "
                     );
             }
 
-            db.Users.Remove(test);
-            db.SaveChanges();
+            //db.Offers.Remove(test); 
+            //db.SaveChanges();
         }
         [TestMethod]
         public void OfferHistoryTest()
         {
             using LichvaContext db = new();
+
+            int? offerid = db.Offers.First().Id;
+            int? statusid = db.OfferStatuses.First().Id;
             OfferHistory test = new OfferHistory
             {
                 CreationDate = DateTime.Now,
-                OfferId = 1,
-                NewState = Category.OfferStatusCaregories.First(x => x.Id == 4).Name,
-                EmployeeId = 1,
+                OfferId = offerid,
+                StatusId = statusid,
+                EmployeeId = db.Users.First().Id,
             };
             db.OfferHistories.Add(test);
             db.SaveChanges();
@@ -145,39 +165,68 @@ namespace UnitTests
                     $"{x.Id}, " +
                     $"{x.CreationDate}, " +
                     $"{x.OfferId}, " +
-                    $"{x.NewState}, " +
+                    $"{x.StatusId}, " +
                     $"{x.EmployeeId}"
                     );
             }
 
-            db.OfferHistories.Remove(test);
-            db.SaveChanges();
+            //db.OfferHistories.Remove(test);
+            //db.SaveChanges();
         }
+
         [TestMethod]
-        public void LoginHistoryTest()
+        public void RoleTest()
         {
             using LichvaContext db = new();
-            LoginHistory test = new LoginHistory
+            foreach(var role in db.Roles)
             {
-                Time = DateTime.Now,
-                IP = "127.0.0.1",
-                UserId = 1,
+                Console.WriteLine($"{role.Id}:{role.Name}");
+            }
+        }
+
+        [TestMethod]
+        public void UserTest()
+        {
+            using LichvaContext db = new();
+            User test = new User()
+            {
+                CreationDate = DateTime.Now,
+                RoleId = db.Roles.First().Id,
+                Hash = null,
+                Internal = false,
+                Anonymous= false,
+                Email = null,
+                FirstName = null,
+                LastName = null,
+                JobTypeId = db.JobTypes.First().Id,
+                IncomeLevel = null,
+                IdTypeId = db.IdTypes.First().Id,
+                IdNumber = null,
             };
-            db.LoginHistories.Add(test);
+            db.Users.Add(test);
             db.SaveChanges();
 
-            foreach (LoginHistory x in db.LoginHistories)
+            foreach (User x in db.Users)
             {
                 Console.WriteLine(
                     $"{x.Id}, " +
-                    $"{x.Time}, " +
-                    $"{x.UserId}, " +
-                    $"{x.Time}"
+                    $"{x.CreationDate}, " +
+                    $"{x.RoleId}, " +
+                    $"{x.Hash}, " +
+                    $"{x.Internal}, " +
+                    $"{x.Email}, " +
+                    $"{x.FirstName}, " +
+                    $"{x.LastName}, " +
+                    $"{x.JobTypeId}, " +
+                    $"{x.IncomeLevel}, " +
+                    $"{x.IdTypeId}, " +
+                    $"{x.IdNumber}"
                     );
             }
 
-            db.LoginHistories.Remove(test);
-            db.SaveChanges();
+            //db.Users.Remove(test);
+            //db.SaveChanges();
         }
+
     }
 }

@@ -7,34 +7,28 @@ namespace BankDataLibrary.Entities
     [Table("offers", Schema = LichvaContext.SchemaName)]
     public class Offer
     {
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; init; }
 
         [Column("creation_date")]
-        public DateTime CreationDate { get; init; }
+        public DateTime? CreationDate { get; init; }
 
-        [Column("user_id")]
-        public int UserId { get; set; }
+        [Column("inquiry_id")]
+        public int? InquiryId { get; set; }
 
-        [Column("bank_id")]
-        public int BankId { get; set; }
+        public decimal? Percentage { get; set; }
 
-        [Column("platform_id")]
-        public int PlatformId { get; set; }
+        [Column("monthlyInstallment")]
+        public decimal? MonthlyInstallment { get; set; }
 
-        public int Ammount { get; set; }
+        [Column("status")]
+        public int? StatusId { get; set; }
 
-        public int Installments { get; set; }
-
-        public string Status { get; set; } = string.Empty;
-
-        public virtual User User { get; set; }
-
-        public virtual Bank Bank { get; set; }
-
-        public virtual Bank Platform { get; set; }
-
+        [Column("document_link")]
+        public string? DocumentLink { get; set; }
+        
+        public virtual Inquiry Inquiry { get; set; }
+        public virtual OfferStatus OfferStatus { get; set; }
         public virtual ICollection<OfferHistory> History { get; set; }
     }
 }

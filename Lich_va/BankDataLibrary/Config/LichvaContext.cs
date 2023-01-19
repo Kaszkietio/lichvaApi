@@ -1,5 +1,6 @@
 ﻿using BankDataLibrary.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,24 +21,50 @@ namespace BankDataLibrary.Config
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // Offer inf-1 Bank
-            builder.Entity<Offer>()
-                .HasOne(offer => offer.Bank)
-                .WithMany(bank => bank.Offers)
-                .HasForeignKey(offer => offer.BankId);
+            // PRIMARY KEYS
+            builder.Entity<Bank>()
+                .HasKey(bank => bank.Id);
 
-            // Offer inf-1 Bank
-            builder.Entity<Offer>()
-                .HasOne(offer => offer.Platform)
-                .WithMany(bank => bank.PlatformOffers)
-                .HasForeignKey(offer => offer.PlatformId);
+            builder.Entity<ForeignInquiry>()
+                .HasKey(finq => new { finq.InquiryId, finq.BankId });
 
-            // Offer inf-1 User
-            builder.Entity<Offer>()
-                .HasOne(offer => offer.User)
-                .WithMany(user => user.Offers)
-                .HasForeignKey(offer => offer.UserId);
+            builder.Entity<IdType>()
+                .HasKey(type => type.Id);
 
+            builder.Entity<Inquiry>()
+                .HasKey(inq => inq.Id);
+
+            builder.Entity<JobType>()
+                .HasKey(type => type.Id);
+
+            builder.Entity<Offer>()
+                .HasKey(x => x.Id);
+
+            builder.Entity<OfferHistory>()
+                .HasKey(x => x.Id);
+
+            builder.Entity<OfferStatus>()
+                .HasKey(offer => offer.Id);
+
+            builder.Entity<Role>()
+                .HasKey(role => role.Id);
+
+            builder.Entity<User>()
+                .HasKey(user => user.Id);
+
+            // FOREIGN KEYS
+            // Offer 1-1 Inq
+            builder.Entity<Offer>()
+                .HasOne(offer => offer.Inquiry)
+                .WithOne(inq => inq.Offer)
+                .HasForeignKey<Offer>(offer => offer.InquiryId);
+
+            // Offer 1-1 OfferStatus
+            builder.Entity<Offer>()
+                .HasOne(offer => offer.OfferStatus)
+                .WithMany(status => status.Offers)
+                .HasForeignKey(offer => offer.StatusId);
+            
             // Inquiry inf-1 User
             builder.Entity<Inquiry>()
                 .HasOne(inq => inq.User)
@@ -56,12 +83,42 @@ namespace BankDataLibrary.Config
                 .WithMany(offer => offer.History)
                 .HasForeignKey(hst => hst.OfferId);
 
-            // LoginHst inf-1 User
-            builder.Entity<LoginHistory>()
-                .HasOne(hst => hst.User)
-                .WithMany(user => user.Logins)
-                .HasForeignKey(hst => hst.UserId);
-                
+            // OfferHst inf-1 OfferStatus
+            builder.Entity<OfferHistory>()
+                .HasOne(hst => hst.Status)
+                .WithMany(status => status.OfferHistories)
+                .HasForeignKey(hst => hst.StatusId);
+
+            // ForeignInq 1 - 1 Inq
+            builder.Entity<ForeignInquiry>()
+                .HasOne(finq => finq.Inquiry)
+                .WithOne(inq => inq.ForeignInquiry)
+                .HasForeignKey<ForeignInquiry>(finq => finq.InquiryId);
+
+            // ForeingInq 1-1 Bank
+            builder.Entity<ForeignInquiry>()
+                .HasOne(finq => finq.Bank)
+                .WithMany(bank => bank.ForeignInquiries)
+                .HasForeignKey(finq => finq.BankId);
+
+            // User inf-1 Role
+            builder.Entity<User>()
+                .HasOne(user => user.Role)
+                .WithMany(role => role.Users)
+                .HasForeignKey(user => user.RoleId);
+
+            // User inf-1 JobType
+            builder.Entity<User>()
+                .HasOne(user => user.JobType)
+                .WithMany(job => job.Users)
+                .HasForeignKey(user => user.JobTypeId);
+
+            // User inf-1 IdType
+            builder.Entity<User>()
+                .HasOne(user => user.IdType)
+                .WithMany(type => type.Users)
+                .HasForeignKey(user => user.IdTypeId);
+
             base.OnModelCreating(builder);
         }
 
@@ -75,10 +132,14 @@ namespace BankDataLibrary.Config
 
         // MODELS
         public virtual DbSet<Bank> Banks { get; set; }
+        public virtual DbSet<ForeignInquiry> ForeignInquiries { get; set; }
+        public virtual DbSet<IdType> IdTypes { get; set; }
         public virtual DbSet<Inquiry> Inquiries { get; set; }
+        public virtual DbSet<JobType> JobTypes { get; set; }
         public virtual DbSet<Offer> Offers { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<OfferHistory> OfferHistories { get; set; }
-        public virtual DbSet<LoginHistory> LoginHistories { get; set; }
+        public virtual DbSet<OfferStatus> OfferStatuses { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using API.Dtos;
+﻿using API.Dtos.Bank;
 using API.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -15,9 +15,21 @@ namespace API.Controllers
         public BankController(IBankRepository repo) { Repository = repo; }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BankDto>>> GetAllAsync()
+        public async Task<ActionResult<IEnumerable<GetBankDto>>> GetAllAsync(
+            [FromHeader] string authToken,
+            [FromQuery] IList<string> names
+            )
         {
-            return Ok((await Repository.GetBanksAsync()).Select(x => x.AsDto()));
+            try
+            {
+                await Repository.AuthenticateUserAsync(authToken);
+                var banks = await Repository.GetBanksAsync(names.ToList());
+                return Ok(banks.Select(x => x.AsGetDto()));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { ex.Message });
+            }
         }
     }
 }

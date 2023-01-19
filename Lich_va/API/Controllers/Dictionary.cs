@@ -1,4 +1,5 @@
-﻿using API.Repositories;
+﻿using API.Dtos.Dictionary;
+using API.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,9 @@ namespace API.Controllers
         [HttpGet]
         [Route("offerStatus")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<string>>> GetOfferStatusAsync()
+        public async Task<ActionResult<IEnumerable<DictionaryDto>>> GetOfferStatusAsync()
         {
-            IEnumerable<string> offertStatus = Category.OfferStatusCaregories.Select(cat => cat.Name);
-            return Ok(offertStatus);
+            return Ok((await Repository.GetOfferStatusesAsync()).Select(x => x.AsDto()));
         }
 
         [HttpGet]
@@ -31,8 +31,7 @@ namespace API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetJobsAsync()
         {
-            IEnumerable<string> jobs = Category.UserJobCategories.Select(cat => cat.Name);
-            return Ok(jobs);
+            return Ok((await Repository.GetJobTypesAsync()).Select(x => x.AsDto()));
         }
 
         [HttpGet]
@@ -40,8 +39,7 @@ namespace API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetRolesAsync()
         {
-            IEnumerable<string> roles = Category.UserRoleCategories.Select(cat => cat.Name);
-            return Ok(roles);
+            return Ok((await Repository.GetRolesAsync()).Select(x => x.AsDto()));
         }
 
         [HttpGet]
@@ -49,8 +47,7 @@ namespace API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<string>>> GetIdTypesAsync()
         {
-            IEnumerable<string> types = Category.UserIdTypeCategories.Select(cat => cat.Name);
-            return Ok(types);
+            return Ok((await Repository.GetIdTypesAsync()).Select(x => x.AsDto()));
         }
 }
 }
