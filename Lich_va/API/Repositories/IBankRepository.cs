@@ -82,9 +82,9 @@ namespace API.Repositories
 
 
         //// Helpers
-        //public Task<OfferStatus?> CheckIdStatus(int stateId);
-        //public Task UpdateOfferStatus(Offer offer, int newStatus);
-        //public Task<int> GetUsersCount();
+        public Task<OfferStatus?> CheckIdStatus(int stateId);
+        public Task UpdateOfferStatus(Offer offer, int newStatus);
+        public Task<int> GetUsersCount();
 
     }
 }
