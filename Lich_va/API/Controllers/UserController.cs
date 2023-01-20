@@ -19,53 +19,54 @@ namespace API.Controllers
         IBankRepository Repository { get; init; }
         public UserController(IBankRepository repo) { Repository = repo; }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetUserDto>>> GetAllAsync(
-            [FromHeader] string authToken,
-            //[FromQuery] IList<int> idFilter,
-            //[FromQuery] IList<DateTime> createDateFilter,
-            //[FromQuery] IList<string> emailFilter,
-            //[FromQuery] IList<int> roleFilter,
-            //[FromQuery] IList<bool> internalFilter,
-            //[FromQuery] IList<bool> anonymousFilter,
-            //[FromQuery] IList<string> hashFilter
-            [FromQuery] string idFilter,
-            [FromQuery] string createDateFilter,
-            [FromQuery] string emailFilter,
-            [FromQuery] string roleFilter,
-            [FromQuery] string internalFilter,
-            [FromQuery] string anonymousFilter,
-            [FromQuery] string hashFilter
-            )
-        {
-            try
-            {
-                var idFilterS = idFilter.ParseInt();
-                var createDateS = createDateFilter.ParseDateTime();
-                var emailS = emailFilter.Parse();
-                var roleS = roleFilter.ParseInt();
-                var internalS = internalFilter.ParseBool();
-                var anonymousS = anonymousFilter.ParseBool();
-                var hashS = hashFilter.Parse();
-                await Repository.AuthenticateUserAsync(authToken);
-                return Ok(
-                    (await Repository.GetUsersAsync(
-                        idFilterS, 
-                        createDateS, 
-                        roleS, 
-                        internalS, 
-                        anonymousS, 
-                        emailS, 
-                        hashS)
-                    )
-                    .Select(x => x.AsGetDto())
-               );
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { ex.Message });
-            }
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<GetUserDto>>> GetAllAsync(
+        //    [FromHeader] string authToken,
+        //    //[FromQuery] IList<int> idFilter,
+        //    //[FromQuery] IList<DateTime> createDateFilter,
+        //    //[FromQuery] IList<string> emailFilter,
+        //    //[FromQuery] IList<int> roleFilter,
+        //    //[FromQuery] IList<bool> internalFilter,
+        //    //[FromQuery] IList<bool> anonymousFilter,
+        //    //[FromQuery] IList<string> hashFilter
+        //    [FromQuery] string idFilter,
+        //    [FromQuery] string createDateFilter,
+        //    [FromQuery] string emailFilter,
+        //    [FromQuery] string roleFilter,
+        //    [FromQuery] string internalFilter,
+        //    [FromQuery] string anonymousFilter,
+        //    [FromQuery] string hashFilter
+        //    )
+        //{
+        //    try
+        //    {
+        //        var idFilterS = idFilter.ParseInt();
+        //        var createDateS = createDateFilter.ParseDateTime();
+        //        var emailS = emailFilter.Parse();
+        //        var roleS = roleFilter.ParseInt();
+        //        var internalS = internalFilter.ParseBool();
+        //        var anonymousS = anonymousFilter.ParseBool();
+        //        var hashS = hashFilter.Parse();
+        //        await Repository.AuthenticateUserAsync(authToken);
+        //        return Ok(
+        //            (await Repository.GetUsersAsync(
+        //                idFilterS, 
+        //                createDateS, 
+        //                roleS, 
+        //                internalS, 
+        //                anonymousS, 
+        //                emailS, 
+        //                hashS)
+        //            )
+        //            .Select(x => x.AsGetDto())
+        //       );
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { ex.Message });
+        //    }
+        //}
+
 
         [HttpPut]
         public async Task<ActionResult> Update(
@@ -88,10 +89,10 @@ namespace API.Controllers
         [HttpGet]
         [Route("inquiries")]
         public async Task<ActionResult<IEnumerable<GetInquiryDto>>> GetInquiriesAsync(
-            [FromHeader] string authToken
-            //[FromQuery] string? creationDate,
-            //[FromQuery] string? ammount,
-            //[FromQuery] string? installments
+            [FromHeader] string authToken,
+            [FromQuery] string? creationDateFilter,
+            [FromQuery] string? ammountFilter,
+            [FromQuery] string? installmentsFilter
             )
         {
             User? user = await Repository.AuthenticateUserAsync(authToken);
@@ -105,9 +106,9 @@ namespace API.Controllers
 
 
             var offers = await Repository.GetUserInquiriesAsync(user);
-
-            
-            return Ok(offers.Select(x => x.AsGetDto()));
+            var tmp = offers.Select(x => x.AsGetDto());
+            var result = tmp.FilterInquiries(creationDateFilter, ammountFilter, installmentsFilter);
+            return Ok(result);
         }
 
         [HttpGet]
@@ -134,12 +135,24 @@ namespace API.Controllers
 
 
             var offers = await Repository.GetUserOffersAsync(user);
-            //return Ok(offers.Select(x => x.AsGetDto()));
             var tmp = offers.Select(x => x.AsGetDto());
             var result = tmp.FilterOffers(creationDateFilter, requestedValueFilter, installmentsFilter, percentageFilter, monthlyInstallmentsFilter, bankIdFilter, statusIdFitler);
 
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult<GetUserDto>> GetUserByOfferAsync(
+            int offerId
+            )
+        {
+            User? user = await Repository.GetUserByOfferAsync(offerId);
+            if (user == null)
+                return BadRequest(new { message = "Invalid offer id" });
+
+            return Ok(user.AsGetDto());
         }
 
         [HttpGet]

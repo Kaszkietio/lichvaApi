@@ -25,6 +25,7 @@ namespace API
 
             GetInquiryDto result = new()
             {
+                InquiryId = inquire.Id,
                 CreationDate = inquire.CreationDate,
                 Ammount = inquire.Ammount,
                 Installments = inquire.Installments,
@@ -344,6 +345,37 @@ namespace API
             return result;
         }
 
+        public static IEnumerable<GetInquiryDto> FilterInquiries(
+            this IEnumerable<GetInquiryDto> query,
+            string? creationDateFilter,
+            string? ammountFiler,
+            string? installmentsFilter
+            )
+        {
+            IEnumerable<GetInquiryDto> result = query;
+
+            if (creationDateFilter != null)
+            {
+                (var _, var range) = creationDateFilter.ParseDateTime();
+                result = result.Where(x =>
+                    range.First() <= x.CreationDate
+                    && x.CreationDate <= range.Last());
+            }
+
+            if (ammountFiler != null)
+            {
+                (var _, var range) = ammountFiler.ParseInt();
+                result = result.Where(x => range.First() <= x.Ammount && x.Ammount <= range.Last());
+            }
+
+            if (installmentsFilter != null)
+            {
+                (var _, var range) = installmentsFilter.ParseInt();
+                result = result.Where(x => range.First() <= x.Installments && x.Installments <= range.Last());
+            }
+
+            return result;
+        }
 
 
 
