@@ -335,7 +335,7 @@ namespace API.Repositories
                 InquiryId = inqId,
                 Percentage = (decimal?)r.NextDouble(),
                 MonthlyInstallment = (decimal?)r.NextDouble(),
-                StatusId = db.OfferStatuses.First(x => x.Name == "waiting_for_acceptance").Id,
+                StatusId = db.OfferStatuses.First(x => x.Name == "offered").Id,
                 DocumentLink = null,
             };
             db.Offers.Add(offer);
@@ -591,32 +591,6 @@ namespace API.Repositories
             using LichvaContext db = new();
             var fq = db.ForeignInquiries.Where(x => x.BankId == 1).Select(x => x.InquiryId);
             return await db.Offers.Where(x => fq.Contains(x.InquiryId.Value)).ToListAsync();
-
-            //var q = db.Offers
-            //    .Include(x => x.Inquiry)
-            //    .Include(x => x.OfferStatus)
-            //    .Include(x => x.History)
-            //    .Join(
-            //        db.ForeignInquiries.Where(x => x.BankId == 1),
-            //        l => l.InquiryId,
-            //        r => r.InquiryId,
-            //        (l, r) => new GetOfferDto
-            //        {
-            //            Id = l.Id,
-            //            Percentage = l.Percentage,
-            //            MonthlyInstallment = l.MonthlyInstallment,
-            //            Ammount = l.Inquiry.Ammount,
-            //            Installments = l.Inquiry.Installments,
-            //            StatusId = l.StatusId,
-            //            StatusDescription = l.OfferStatus.Name,
-            //            InquiryId = l.InquiryId,
-            //            CreateDate = l.CreationDate,
-            //            UpdateDate = null,
-            //            ApprovedBy = null,
-            //            DocumentLink = l.DocumentLink,
-            //            DocumentLinkValidDate = null,
-            //            BankId = r.BankId
-            //        });
         }
 
         public async Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user)
@@ -647,6 +621,15 @@ namespace API.Repositories
             using LichvaContext db = new();
             return await db.Users.CountAsync();
         }
+
+        public async Task<IEnumerable<Offer>> GetOffersByInquiryAsync(User user, int inquiryId)
+        {
+            using LichvaContext db = new();
+            return await db.Offers.Include(x => x.Inquiry)
+                            .Where(x => x.InquiryId == inquiryId)
+                            .Where(x => x.Inquiry.UserId == user.Id)
+                            .ToListAsync();
+        }           
 
     }
 }

@@ -40,14 +40,14 @@ namespace API.Controllers
         [HttpGet]
         [Route("offers")]
         public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetEmployeeOffers(
-            [FromHeader] string authToken
-            //[FromQuery] string? creationDateFilter,
-            //[FromQuery] string? requestedValueFilter,
-            //[FromQuery] string? installmentsFilter,
-            //[FromQuery] string? percentageFilter,
-            //[FromQuery] string? monthlyInstallmentsFilter,
-            //[FromQuery] string? bankIdFilter,
-            //[FromQuery] string? statusIdFitler
+            [FromHeader] string authToken,
+            [FromQuery] string? creationDateFilter,
+            [FromQuery] string? requestedValueFilter,
+            [FromQuery] string? installmentsFilter,
+            [FromQuery] string? percentageFilter,
+            [FromQuery] string? monthlyInstallmentsFilter,
+            [FromQuery] string? bankIdFilter,
+            [FromQuery] string? statusIdFitler
             )
         {
             User? user = await Repository.AuthenticateUserAsync(authToken);
@@ -61,10 +61,10 @@ namespace API.Controllers
 
 
             var offers = await Repository.GetEmployeeOffersAsync(user);
-            return Ok(offers.Select(x => x.AsGetDto()));
-            //var result = offers.FilterOffers(creationDateFilter, requestedValueFilter, installmentsFilter, percentageFilter, monthlyInstallmentsFilter, bankIdFilter, statusIdFitler);
+            var tmp = offers.Select(x => x.AsGetDto());
+            var result = tmp.FilterOffers(creationDateFilter, requestedValueFilter, installmentsFilter, percentageFilter, monthlyInstallmentsFilter, bankIdFilter, statusIdFitler);
 
-            //return Ok(result);
+            return Ok(result);
         }
     }
 }

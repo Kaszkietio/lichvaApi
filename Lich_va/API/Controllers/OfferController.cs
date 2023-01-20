@@ -52,43 +52,58 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetAllAsync(
+        public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetAllOffersByInquiryAsync(
             [FromHeader] string authToken,
-            //[FromQuery] IList<int> idFilter,
-            //[FromQuery] IList<int> inquiryIdFilter,
-            //[FromQuery] IList<DateTime> createDateFilter,
-            //[FromQuery] IList<decimal> percentageFilter,
-            //[FromQuery] IList<decimal> monthlyInstallmentFilter,
-            //[FromQuery] IList<int> statusFilter
-            [FromQuery] string? idFilter,
-            [FromQuery] string? inquiryIdFilter,
-            [FromQuery] string? createDateFilter,
-            [FromQuery] string? percentageFilter,
-            [FromQuery] string? monthlyInstallmentFilter,
-            [FromQuery] string? statusFilter
-            //[FromQuery] string? sortColumn,
-            //[FromQuery] bool? sortDescending
+            int inquiryId
             )
         {
-            try
-            {
-                User user = await Repository.AuthenticateUserAsync(authToken);
-                var result = await Repository.GetOffersAsync(user,
-                    idFilter.ParseInt(),
-                    inquiryIdFilter.ParseInt(),
-                    createDateFilter.ParseDateTime(),
-                    percentageFilter.ParseDecimal(),
-                    monthlyInstallmentFilter.ParseDecimal(),
-                    statusFilter.ParseInt()
-                    );
+            User? user = await Repository.AuthenticateUserAsync(authToken);
+            if (user == null)
+                return Unauthorized();
 
-                return Ok(result.Select(x => x.AsGetDto()));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { ex.Message });
-            }
+            var offers = await Repository.GetOffersByInquiryAsync(user, inquiryId);
+
+            return Ok(offers.Select(x => x.AsGetDto()));
         }
+
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetAllAsync(
+        //    [FromHeader] string authToken,
+        //    //[FromQuery] IList<int> idFilter,
+        //    //[FromQuery] IList<int> inquiryIdFilter,
+        //    //[FromQuery] IList<DateTime> createDateFilter,
+        //    //[FromQuery] IList<decimal> percentageFilter,
+        //    //[FromQuery] IList<decimal> monthlyInstallmentFilter,
+        //    //[FromQuery] IList<int> statusFilter
+        //    [FromQuery] string? idFilter,
+        //    [FromQuery] string? inquiryIdFilter,
+        //    [FromQuery] string? createDateFilter,
+        //    [FromQuery] string? percentageFilter,
+        //    [FromQuery] string? monthlyInstallmentFilter,
+        //    [FromQuery] string? statusFilter
+        //    //[FromQuery] string? sortColumn,
+        //    //[FromQuery] bool? sortDescending
+        //    )
+        //{
+        //    try
+        //    {
+        //        User user = await Repository.AuthenticateUserAsync(authToken);
+        //        var result = await Repository.GetOffersAsync(user,
+        //            idFilter.ParseInt(),
+        //            inquiryIdFilter.ParseInt(),
+        //            createDateFilter.ParseDateTime(),
+        //            percentageFilter.ParseDecimal(),
+        //            monthlyInstallmentFilter.ParseDecimal(),
+        //            statusFilter.ParseInt()
+        //            );
+
+        //        return Ok(result.Select(x => x.AsGetDto()));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { ex.Message });
+        //    }
+        //}
 
         [HttpPost]
         [Route("{offerId}/document/upload")]
@@ -115,10 +130,10 @@ namespace API.Controllers
 
                 using MemoryStream stream = new();
                 await file.CopyToAsync(stream);
+                string ext = Path.GetExtension(file.FileName);
                 stream.Position = 0;
 
-                // TODO:
-                string blobName = user.GetContractName(offer);
+                string blobName = user.GetContractName(offer, ext);
 
                 await client.UploadBlobAsync(blobName, stream);
 
@@ -164,13 +179,12 @@ namespace API.Controllers
                 
                 BlobContainerClient client = new(AppSettings.Instance.BlobConnectionString, AppSettings.Instance.BlobContainerName);
 
-                // TODO:
-                string blobName = user.GetContractName(offer);
+                string blobName = Path.GetFileName(offer.DocumentLink);
 
                 var blob = await client.GetBlobClient(blobName).DownloadContentAsync();
                 Stream blobStream = await client.GetBlobClient(blobName).OpenReadAsync();
 
-                return File(blobStream, blob.Value.Details.ContentType, blobName);
+                return File(blobStream, blob.Value.Details.ContentType, blobName[..^1]);
             }
             catch ( Exception ex )
             {

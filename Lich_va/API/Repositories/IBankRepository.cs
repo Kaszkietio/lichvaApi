@@ -80,6 +80,8 @@ namespace API.Repositories
         public Task<IEnumerable<Offer>> GetEmployeeOffersAsync(User user);
         public Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user);
 
+        // Offer
+        public Task<IEnumerable<Offer>> GetOffersByInquiryAsync(User user, int inquiryId);
 
         //// Helpers
         public Task<OfferStatus?> CheckIdStatus(int stateId);
