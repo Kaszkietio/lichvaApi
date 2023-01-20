@@ -559,7 +559,7 @@ namespace API.Repositories
             return role != null && role.Name == roleName;
         }
 
-        public async Task<IQueryable<GetOfferDto>> GetUserOffersAsync(User user)
+        public async Task<IEnumerable<GetOfferDto>> GetUserOffersAsync(User user)
         {
             using LichvaContext db = new LichvaContext();
 
@@ -576,20 +576,20 @@ namespace API.Repositories
             var CURRENTOTHERAPI = new List<Offer>();
             offers.Concat(CURRENTOTHERAPI.Where(x => foreignInqs.Contains(x.InquiryId.Value)));
 
-            return offers.Select(x => x.AsGetDto());
+            return await offers.Select(x => x.AsGetDto()).ToListAsync();
         }
 
-        public async Task<IQueryable<Inquiry>> GetUserInquiriesAsync(User user)
+        public async Task<IEnumerable<Inquiry>> GetUserInquiriesAsync(User user)
         {
             using LichvaContext db = new();
-            return db.Inquiries.Where(x => x.UserId == user.Id);
+            return await db.Inquiries.Where(x => x.UserId == user.Id).ToListAsync();
         }
 
-        public async Task<IQueryable<GetOfferDto>> GetEmployeeOffersAsync(User user)
+        public async Task<IEnumerable<GetOfferDto>> GetEmployeeOffersAsync(User user)
         {
             using LichvaContext db = new();
             var fq = db.ForeignInquiries.Where(x => x.BankId == 1).Select(x => x.InquiryId);
-            return db.Offers.Where(x => fq.Contains(x.InquiryId.Value)).Select(x => x.AsGetDto());
+            return await db.Offers.Where(x => fq.Contains(x.InquiryId.Value)).Select(x => x.AsGetDto()).ToListAsync();
 
             //var q = db.Offers
             //    .Include(x => x.Inquiry)
@@ -618,11 +618,11 @@ namespace API.Repositories
             //        });
         }
 
-        public async Task<IQueryable<Inquiry>> GetEmployeeInquiryAsync(User user)
+        public async Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user)
         {
             using LichvaContext db = new();
             var usersId = db.Users.Where(x => x.Internal.Value).Select(x => x.Id);
-            return db.Inquiries.Where(x => usersId.Contains(x.UserId.Value));
+            return await db.Inquiries.Where(x => usersId.Contains(x.UserId.Value)).ToListAsync();
         }
 
         public async Task<OfferStatus?> CheckIdStatus(int stateId)

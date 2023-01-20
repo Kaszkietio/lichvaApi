@@ -287,8 +287,8 @@ namespace API
             return (isRange, result);
         }
 
-        public static IQueryable<GetOfferDto> FilterOffers(
-            this IQueryable<GetOfferDto> query,
+        public static IEnumerable<GetOfferDto> FilterOffers(
+            this IEnumerable<GetOfferDto> query,
             string? creationDateFilter,
             string? requestedValueFilter,
             string? installmentsFilter,
@@ -298,7 +298,7 @@ namespace API
             string? statusIdFitler
             )
         {
-            IQueryable<GetOfferDto> result = query; 
+            IEnumerable<GetOfferDto> result = query; 
 
             if (creationDateFilter != null)
             {
