@@ -14,22 +14,15 @@ JObject o = JObject.Parse(@json);
 AppSettings.Instance = JsonConvert.DeserializeObject<AppSettings>(o["AppSettings"].ToString());
 
 
-//builder.Services.AddCors(opts =>
-//{
-//    opts.AddPolicy("AllowAll", builder =>
-//    {
-//        //builder.AllowAnyOrigin()
-//        //       .AllowAnyMethod()
-//        //       .AllowAnyHeader();
-//        builder.AllowAnyMethod()
-//               .AllowAnyHeader()
-//               .SetIsOriginAllowed(origin => true)
-//               //.AllowAnyOrigin()
-               
-//               .AllowCredentials()
-//                ;
-//    });
-//});
+builder.Services.AddCors(opts =>
+{
+    opts.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddAuthentication()
     .AddJwtBearer(cfg =>

@@ -39,13 +39,13 @@ namespace API.Repositories
             (bool IsRange, IList<DateTime>)? createDateFilter = null,
             (bool IsRange, IList<decimal>)? percentageFilter = null,
             (bool IsRange, IList<decimal>)? monthlyInstallmentFilter = null,
-            (bool IsRange, IList<int>)? statusFilter = null,
-            (bool IsRange, IList<int>)? bankIdFiler = null,
-            (bool IsRange, IList<int>)? statusIdFilter = null,
-            (bool IsRange, IList<int>)? installmentsFilter = null,
-            (bool IsRange, IList<int>)? requestedValueFilter = null,
-            string? sortColumn = null,
-            bool? sortDesc = null
+            (bool IsRange, IList<int>)? statusFilter = null
+            //(bool IsRange, IList<int>)? bankIdFiler = null,
+            //(bool IsRange, IList<int>)? statusIdFilter = null,
+            //(bool IsRange, IList<int>)? installmentsFilter = null,
+            //(bool IsRange, IList<int>)? requestedValueFilter = null,
+            //string? sortColumn = null,
+            //bool? sortDesc = null
             );
         public Task UpdateOfferAsync(int id, UpdateOfferDto dto);
 
@@ -73,18 +73,18 @@ namespace API.Repositories
         // User
         public Task<Role?> GetRoleAsync(User user);
 
-        public Task<IEnumerable<GetOfferDto>> GetUserOffersAsync(User user);
+        public Task<IEnumerable<Offer>> GetUserOffersAsync(User user);
         public Task<IEnumerable<Inquiry>> GetUserInquiriesAsync(User user);
 
         // EMPLOYEE
-        public Task<IEnumerable<GetOfferDto>> GetEmployeeOffersAsync(User user);
+        public Task<IEnumerable<Offer>> GetEmployeeOffersAsync(User user);
         public Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user);
 
 
-        // Helpers
-        public Task<OfferStatus?> CheckIdStatus(int stateId);
-        public Task UpdateOfferStatus(Offer offer, int newStatus);
-        public Task<int> GetUsersCount();
+        //// Helpers
+        //public Task<OfferStatus?> CheckIdStatus(int stateId);
+        //public Task UpdateOfferStatus(Offer offer, int newStatus);
+        //public Task<int> GetUsersCount();
 
     }
 }

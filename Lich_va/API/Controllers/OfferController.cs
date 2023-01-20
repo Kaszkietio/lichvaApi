@@ -60,12 +60,12 @@ namespace API.Controllers
             //[FromQuery] IList<decimal> percentageFilter,
             //[FromQuery] IList<decimal> monthlyInstallmentFilter,
             //[FromQuery] IList<int> statusFilter
-            [FromQuery] string idFilter,
-            [FromQuery] string inquiryIdFilter,
-            [FromQuery] string createDateFilter,
-            [FromQuery] string percentageFilter,
-            [FromQuery] string monthlyInstallmentFilter,
-            [FromQuery] string statusFilter
+            [FromQuery] string? idFilter,
+            [FromQuery] string? inquiryIdFilter,
+            [FromQuery] string? createDateFilter,
+            [FromQuery] string? percentageFilter,
+            [FromQuery] string? monthlyInstallmentFilter,
+            [FromQuery] string? statusFilter
             //[FromQuery] string? sortColumn,
             //[FromQuery] bool? sortDescending
             )
@@ -178,36 +178,36 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("{offerId}/updateStatus")]
-        public async Task<ActionResult> UpdateOfferStatusAsync(
-            [FromHeader] string authToken,
-            int offerId,
-            int newStateId
-            )
-        {
-            try
-            {
-                User? user = await Repository.AuthenticateUserAsync(authToken);
-                if (user == null)
-                    return Unauthorized();
+        //[HttpPut]
+        //[Route("{offerId}/updateStatus")]
+        //public async Task<ActionResult> UpdateOfferStatusAsync(
+        //    [FromHeader] string authToken,
+        //    int offerId,
+        //    int newStateId
+        //    )
+        //{
+        //    try
+        //    {
+        //        User? user = await Repository.AuthenticateUserAsync(authToken);
+        //        if (user == null)
+        //            return Unauthorized();
 
-                OfferStatus? offerStatus = await Repository.CheckIdStatus(newStateId);
-                if (offerStatus == null)
-                    return BadRequest(new { message = "Wrong offer status"});
+        //        OfferStatus? offerStatus = await Repository.CheckIdStatus(newStateId);
+        //        if (offerStatus == null)
+        //            return BadRequest(new { message = "Wrong offer status"});
 
-                Offer? offer = (await Repository.GetOffersAsync(user)).FirstOrDefault(x => x.Id == offerId);
-                if (offer == null)
-                    return NotFound();
+        //        Offer? offer = (await Repository.GetOffersAsync(user)).FirstOrDefault(x => x.Id == offerId);
+        //        if (offer == null)
+        //            return NotFound();
 
-                await Repository.UpdateOfferStatus(offer, newStateId);
+        //        await Repository.UpdateOfferStatus(offer, newStateId);
 
-                return Ok();
-            }
-            catch(Exception ex )
-            {
-                return StatusCode(500, new {ex.Message});
-            }
-        }
+        //        return Ok();
+        //    }
+        //    catch(Exception ex )
+        //    {
+        //        return StatusCode(500, new {ex.Message});
+        //    }
+        //}
     }
 }

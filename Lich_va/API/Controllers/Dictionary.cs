@@ -3,8 +3,6 @@ using API.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SendGrid.Helpers.Mail;
-using SendGrid;
 
 namespace API.Controllers
 {
