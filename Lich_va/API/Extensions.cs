@@ -287,65 +287,65 @@ namespace API
             return (isRange, result);
         }
 
-        public static IEnumerable<GetOfferDto> FilterOffers(
-            this IEnumerable<GetOfferDto> query,
-            string? creationDateFilter,
-            string? requestedValueFilter,
-            string? installmentsFilter,
-            string? percentageFilter,
-            string? monthlyInstallmentsFilter,
-            string? bankIdFilter,
-            string? statusIdFitler
-            )
-        {
-            IEnumerable<GetOfferDto> result = query; 
+        //public static IEnumerable<GetOfferDto> FilterOffers(
+        //    this IEnumerable<GetOfferDto> query,
+        //    string? creationDateFilter,
+        //    string? requestedValueFilter,
+        //    string? installmentsFilter,
+        //    string? percentageFilter,
+        //    string? monthlyInstallmentsFilter,
+        //    string? bankIdFilter,
+        //    string? statusIdFitler
+        //    )
+        //{
+        //    IEnumerable<GetOfferDto> result = query; 
 
-            if (creationDateFilter != null)
-            {
-                (var _, var range) = creationDateFilter.ParseDateTime();
-                result = result.Where(x =>
-                    range.First() <= x.CreateDate
-                    && x.CreateDate <= range.Last());
-            }
+        //    if (creationDateFilter != null)
+        //    {
+        //        (var _, var range) = creationDateFilter.ParseDateTime();
+        //        result = result.Where(x =>
+        //            range.First() <= x.CreateDate
+        //            && x.CreateDate <= range.Last());
+        //    }
 
-            if(requestedValueFilter != null)
-            {
-                (var _, var range) = requestedValueFilter.ParseInt();
-                result = result.Where(x => range.First() <= x.Ammount && x.Ammount <= range.Last());
-            }
+        //    if(requestedValueFilter != null)
+        //    {
+        //        (var _, var range) = requestedValueFilter.ParseInt();
+        //        result = result.Where(x => range.First() <= x.Ammount && x.Ammount <= range.Last());
+        //    }
             
-            if(installmentsFilter != null)
-            {
-                (var _, var range) = installmentsFilter.ParseInt();
-                result = result.Where(x => range.First() <= x.Installments && x.Installments <= range.Last());
-            }
+        //    if(installmentsFilter != null)
+        //    {
+        //        (var _, var range) = installmentsFilter.ParseInt();
+        //        result = result.Where(x => range.First() <= x.Installments && x.Installments <= range.Last());
+        //    }
 
-            if (percentageFilter != null)
-            {
-                (var _, var range) = percentageFilter.ParseDecimal();
-                result = result.Where(x => range.First() <= x.Percentage && x.Percentage <= range.Last());
-            }
+        //    if (percentageFilter != null)
+        //    {
+        //        (var _, var range) = percentageFilter.ParseDecimal();
+        //        result = result.Where(x => range.First() <= x.Percentage && x.Percentage <= range.Last());
+        //    }
 
-            if(monthlyInstallmentsFilter != null)
-            {
-                (var _, var range) = percentageFilter.ParseDecimal();
-                result = result.Where(x => range.First() <= x.MonthlyInstallment && x.MonthlyInstallment <= range.Last());
-            }
+        //    if(monthlyInstallmentsFilter != null)
+        //    {
+        //        (var _, var range) = percentageFilter.ParseDecimal();
+        //        result = result.Where(x => range.First() <= x.MonthlyInstallment && x.MonthlyInstallment <= range.Last());
+        //    }
 
-            if(bankIdFilter != null)
-            {
-                (var _, var arr) = bankIdFilter.ParseInt();
-                result = result.Where(x => arr.Contains(x.BankId.Value));
-            }
+        //    if(bankIdFilter != null)
+        //    {
+        //        (var _, var arr) = bankIdFilter.ParseInt();
+        //        result = result.Where(x => arr.Contains(x.BankId.Value));
+        //    }
 
-            if(statusIdFitler != null)
-            {
-                (var _, var arr) = statusIdFitler.ParseInt();
-                result = result.Where(x => arr.Contains(x.StatusId.Value));
-            }
+        //    if(statusIdFitler != null)
+        //    {
+        //        (var _, var arr) = statusIdFitler.ParseInt();
+        //        result = result.Where(x => arr.Contains(x.StatusId.Value));
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
 
 

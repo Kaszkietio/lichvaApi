@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Compile Remove="Dtos\Inquiry\InquiryDto.cs" />
+    <Compile Remove="Helpers\EmailSender.cs" />
+    <Compile Remove="Repositories\InMemBankRepository.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +20,6 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.13" />
-    <PackageReference Include="SendGrid" Version="9.28.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
