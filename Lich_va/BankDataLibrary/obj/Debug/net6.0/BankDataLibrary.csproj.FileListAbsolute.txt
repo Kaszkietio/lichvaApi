@@ -22,3 +22,17 @@ D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibra
 D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\refint\BankDataLibrary.dll
 D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.pdb
 D:\Dev\NET\dotNET_projekt\Lich_va\BankDataLibrary\obj\Debug\net6.0\ref\BankDataLibrary.dll
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\bin\Debug\net6.0\BankDataLibrary.deps.json
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\bin\Debug\net6.0\BankDataLibrary.runtimeconfig.json
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\bin\Debug\net6.0\BankDataLibrary.dll
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\bin\Debug\net6.0\BankDataLibrary.pdb
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.csproj.AssemblyReference.cache
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.GeneratedMSBuildEditorConfig.editorconfig
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.AssemblyInfoInputs.cache
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.AssemblyInfo.cs
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.csproj.CoreCompileInputs.cache
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.dll
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\refint\BankDataLibrary.dll
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.pdb
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\BankDataLibrary.genruntimeconfig.cache
+D:\Dev\NET\lichvaApi\Lich_va\BankDataLibrary\obj\Debug\net6.0\ref\BankDataLibrary.dll

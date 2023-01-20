@@ -156,12 +156,9 @@ namespace API
             return result;
         }
 
-        public static string GetContractName(this User user, Offer offer)
+        public static string GetContractName(this User user, Offer offer, string suffix)
         {
-            return Security.Encrypt(AppSettings.Instance.ContractKey, "umowa_"
-                    + user.Email
-                    + "_"
-                    + offer.Id.ToString());
+            return "umowa_" + offer.Id + suffix + ".";
         }
 
         public static (bool IsRange, IList<string> arr) Parse(this string? s)
@@ -287,65 +284,65 @@ namespace API
             return (isRange, result);
         }
 
-        //public static IEnumerable<GetOfferDto> FilterOffers(
-        //    this IEnumerable<GetOfferDto> query,
-        //    string? creationDateFilter,
-        //    string? requestedValueFilter,
-        //    string? installmentsFilter,
-        //    string? percentageFilter,
-        //    string? monthlyInstallmentsFilter,
-        //    string? bankIdFilter,
-        //    string? statusIdFitler
-        //    )
-        //{
-        //    IEnumerable<GetOfferDto> result = query; 
+        public static IEnumerable<GetOfferDto> FilterOffers(
+            this IEnumerable<GetOfferDto> query,
+            string? creationDateFilter,
+            string? requestedValueFilter,
+            string? installmentsFilter,
+            string? percentageFilter,
+            string? monthlyInstallmentsFilter,
+            string? bankIdFilter,
+            string? statusIdFitler
+            )
+        {
+            IEnumerable<GetOfferDto> result = query;
 
-        //    if (creationDateFilter != null)
-        //    {
-        //        (var _, var range) = creationDateFilter.ParseDateTime();
-        //        result = result.Where(x =>
-        //            range.First() <= x.CreateDate
-        //            && x.CreateDate <= range.Last());
-        //    }
+            if (creationDateFilter != null)
+            {
+                (var _, var range) = creationDateFilter.ParseDateTime();
+                result = result.Where(x =>
+                    range.First() <= x.CreateDate
+                    && x.CreateDate <= range.Last());
+            }
 
-        //    if(requestedValueFilter != null)
-        //    {
-        //        (var _, var range) = requestedValueFilter.ParseInt();
-        //        result = result.Where(x => range.First() <= x.Ammount && x.Ammount <= range.Last());
-        //    }
-            
-        //    if(installmentsFilter != null)
-        //    {
-        //        (var _, var range) = installmentsFilter.ParseInt();
-        //        result = result.Where(x => range.First() <= x.Installments && x.Installments <= range.Last());
-        //    }
+            if (requestedValueFilter != null)
+            {
+                (var _, var range) = requestedValueFilter.ParseInt();
+                result = result.Where(x => range.First() <= x.Ammount && x.Ammount <= range.Last());
+            }
 
-        //    if (percentageFilter != null)
-        //    {
-        //        (var _, var range) = percentageFilter.ParseDecimal();
-        //        result = result.Where(x => range.First() <= x.Percentage && x.Percentage <= range.Last());
-        //    }
+            if (installmentsFilter != null)
+            {
+                (var _, var range) = installmentsFilter.ParseInt();
+                result = result.Where(x => range.First() <= x.Installments && x.Installments <= range.Last());
+            }
 
-        //    if(monthlyInstallmentsFilter != null)
-        //    {
-        //        (var _, var range) = percentageFilter.ParseDecimal();
-        //        result = result.Where(x => range.First() <= x.MonthlyInstallment && x.MonthlyInstallment <= range.Last());
-        //    }
+            if (percentageFilter != null)
+            {
+                (var _, var range) = percentageFilter.ParseDecimal();
+                result = result.Where(x => range.First() <= x.Percentage && x.Percentage <= range.Last());
+            }
 
-        //    if(bankIdFilter != null)
-        //    {
-        //        (var _, var arr) = bankIdFilter.ParseInt();
-        //        result = result.Where(x => arr.Contains(x.BankId.Value));
-        //    }
+            if (monthlyInstallmentsFilter != null)
+            {
+                (var _, var range) = percentageFilter.ParseDecimal();
+                result = result.Where(x => range.First() <= x.MonthlyInstallment && x.MonthlyInstallment <= range.Last());
+            }
 
-        //    if(statusIdFitler != null)
-        //    {
-        //        (var _, var arr) = statusIdFitler.ParseInt();
-        //        result = result.Where(x => arr.Contains(x.StatusId.Value));
-        //    }
+            if (bankIdFilter != null)
+            {
+                (var _, var arr) = bankIdFilter.ParseInt();
+                result = result.Where(x => arr.Contains(x.BankId.Value));
+            }
 
-        //    return result;
-        //}
+            if (statusIdFitler != null)
+            {
+                (var _, var arr) = statusIdFitler.ParseInt();
+                result = result.Where(x => arr.Contains(x.StatusId.Value));
+            }
+
+            return result;
+        }
 
 
 
