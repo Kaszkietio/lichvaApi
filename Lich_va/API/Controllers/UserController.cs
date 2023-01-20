@@ -141,14 +141,14 @@ namespace API.Controllers
             //return Ok(result);
         }
 
-        //[HttpGet]
-        //[Route("count")]
-        //[AllowAnonymous]
-        //public async Task<ActionResult> GetUserCount()
-        //{
-        //    int count = await Repository.GetUsersCount();
+        [HttpGet]
+        [Route("total_count")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetUserCount()
+        {
+            int count = await Repository.GetUsersCount();
 
-        //    return Ok(new { count });
-        //}
+            return Ok(new { count });
+        }
     }
 }

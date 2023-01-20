@@ -626,27 +626,27 @@ namespace API.Repositories
             return await db.Inquiries.Where(x => usersId.Contains(x.UserId.Value)).ToListAsync();
         }
 
-        //public async Task<OfferStatus?> CheckIdStatus(int stateId)
-        //{
-        //    using LichvaContext db = new LichvaContext();
-        //    return await db.OfferStatuses.FirstOrDefaultAsync(x => x.Id == stateId);
-        //}
+        public async Task<OfferStatus?> CheckIdStatus(int stateId)
+        {
+            using LichvaContext db = new LichvaContext();
+            return await db.OfferStatuses.FirstOrDefaultAsync(x => x.Id == stateId);
+        }
 
-        //public async Task UpdateOfferStatus(Offer offer, int newStatus)
-        //{
-        //    using LichvaContext db = new();
-        //    var tmp = await db.Offers.FirstAsync(x => x.Id == offer.Id);
+        public async Task UpdateOfferStatus(Offer offer, int newStatus)
+        {
+            using LichvaContext db = new();
+            var tmp = await db.Offers.FirstAsync(x => x.Id == offer.Id);
 
-        //    tmp.StatusId = newStatus;
-        //    await db.SaveChangesAsync();
-        //}
+            tmp.StatusId = newStatus;
+            await db.SaveChangesAsync();
+        }
 
 
-        //public async Task<int> GetUsersCount()
-        //{
-        //    using LichvaContext db = new();
-        //    return await db.Users.CountAsync();
-        //}
+        public async Task<int> GetUsersCount()
+        {
+            using LichvaContext db = new();
+            return await db.Users.CountAsync();
+        }
 
     }
 }
