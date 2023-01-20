@@ -7,6 +7,7 @@ using BankDataLibrary.Config;
 using BankDataLibrary.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using static API.Repositories.IBankRepository;
@@ -229,7 +230,13 @@ namespace API.Repositories
             (bool IsRange, IList<DateTime>)? createDateFilter = null,
             (bool IsRange, IList<decimal>)? percentageFilter = null,
             (bool IsRange, IList<decimal>)? monthlyInstallmentFilter = null,
-            (bool IsRange, IList<int>)? statusFilter = null 
+            (bool IsRange, IList<int>)? statusFilter = null,
+            (bool IsRange, IList<int>)? bankIdFiler = null,
+            (bool IsRange, IList<int>)? statusIdFilter = null,
+            (bool IsRange, IList<int>)? installmentsFilter = null,
+            (bool IsRange, IList<int>)? requestedValueFilter = null,
+            string? sortColumn = null,
+            bool? sortDesc = null
             )
         {
             idFilter??= (false, new List<int>());
@@ -239,7 +246,7 @@ namespace API.Repositories
             monthlyInstallmentFilter ??= (false, new List<decimal>());
             statusFilter ??= (false, new List<int>());
 
-            return await InternalGetOffersAsync(user, idFilter.Value, inquiryIdFilter.Value, createDateFilter.Value, percentageFilter.Value, monthlyInstallmentFilter.Value, statusFilter.Value);
+            return await InternalGetOffersAsync(user, idFilter.Value, inquiryIdFilter.Value, createDateFilter.Value, percentageFilter.Value, monthlyInstallmentFilter.Value, statusFilter.Value, bankIdFiler.Value, statusIdFilter.Value, installmentsFilter.Value, requestedValueFilter.Value, sortColumn, sortDesc);
         }
 
         public async Task<IEnumerable<Offer>> InternalGetOffersAsync(
@@ -249,7 +256,13 @@ namespace API.Repositories
             (bool IsRange, IList<DateTime> arr) createDateFilter,
             (bool IsRange, IList<decimal> arr) percentageFilter,
             (bool IsRange, IList<decimal> arr) monthlyInstallmentFilter,
-            (bool IsRange, IList<int> arr) statusFilter 
+            (bool IsRange, IList<int> arr) statusFilter,
+            (bool IsRange, IList<int>) bankIdFiler,
+            (bool IsRange, IList<int>) statusIdFilter, 
+            (bool IsRange, IList<int>) installmentsFilter,
+            (bool IsRange, IList<int>) requestedValueFilter,
+            string? sortColumn = null,
+            bool? sortDesc = null
             )
         {
             using LichvaContext db = new();
@@ -291,6 +304,19 @@ namespace API.Repositories
                 result = result.Where(x => statusFilter.arr.First() <= x.StatusId && x.StatusId <= statusFilter.arr.Last());
             else if(statusFilter.arr.Count != 0)
                 result = result.Where(x => x.StatusId.HasValue && statusFilter.arr.Contains(x.StatusId.Value));
+
+
+
+            //IQueryable<GetOfferDto> getOfferDtos = result.Select(x =>
+            //new GetOfferDto
+            //{
+            //     Id = x.Id,
+            //      Percentage = x.Percentage,
+            //      MonthlyInstallment = x.MonthlyInstallment,
+            //      Ammount = x.Inquiry.Ammount,
+            //      Installments = 
+            //}
+            //);
 
             return await result.ToListAsync();
         }
@@ -505,7 +531,7 @@ namespace API.Repositories
         }
 
 
-        // ////////////////////////////////////////////////////////////
+        // //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public async Task<User?> AuthenticateUserAsync(string authToken)
         {
@@ -533,7 +559,7 @@ namespace API.Repositories
             return role != null && role.Name == roleName;
         }
 
-        public async Task<IEnumerable<Offer>> GetUserOffersAsync(User user)
+        public async Task<IQueryable<GetOfferDto>> GetUserOffersAsync(User user)
         {
             using LichvaContext db = new LichvaContext();
 
@@ -542,36 +568,83 @@ namespace API.Repositories
             IQueryable<int> foreignInqs = db.ForeignInquiries
                 .Where(x => x.BankId == 1 && inquiryIds.Contains(x.InquiryId)).Select(x => x.InquiryId);
 
-            var offers = await db.Offers.Where(x => foreignInqs.Contains(x.InquiryId.Value)).ToListAsync();
+            var offers = db.Offers.Where(x => foreignInqs.Contains(x.InquiryId.Value));
 
             foreignInqs = db.ForeignInquiries
                 .Where(x => x.BankId != 1 && inquiryIds.Contains(x.InquiryId)).Select(x => x.ForeignInquiryId.Value);
 
             var CURRENTOTHERAPI = new List<Offer>();
-            offers.AddRange(CURRENTOTHERAPI.Where(x => foreignInqs.Contains(x.InquiryId.Value)));
+            offers.Concat(CURRENTOTHERAPI.Where(x => foreignInqs.Contains(x.InquiryId.Value)));
 
-            return offers;
+            return offers.Select(x => x.AsGetDto());
         }
 
-        public async Task<IEnumerable<Inquiry>> GetUserInquiriesAsync(User user)
+        public async Task<IQueryable<Inquiry>> GetUserInquiriesAsync(User user)
         {
             using LichvaContext db = new();
-            return await db.Inquiries.Where(x => x.UserId == user.Id).ToListAsync();
+            return db.Inquiries.Where(x => x.UserId == user.Id);
         }
 
-        public async Task<IEnumerable<Offer>> GetEmployeeOffersAsync(User user)
+        public async Task<IQueryable<GetOfferDto>> GetEmployeeOffersAsync(User user)
         {
             using LichvaContext db = new();
             var fq = db.ForeignInquiries.Where(x => x.BankId == 1).Select(x => x.InquiryId);
-            return await db.Offers.Where(x => fq.Contains(x.InquiryId.Value)).ToListAsync();
+            return db.Offers.Where(x => fq.Contains(x.InquiryId.Value)).Select(x => x.AsGetDto());
+
+            //var q = db.Offers
+            //    .Include(x => x.Inquiry)
+            //    .Include(x => x.OfferStatus)
+            //    .Include(x => x.History)
+            //    .Join(
+            //        db.ForeignInquiries.Where(x => x.BankId == 1),
+            //        l => l.InquiryId,
+            //        r => r.InquiryId,
+            //        (l, r) => new GetOfferDto
+            //        {
+            //            Id = l.Id,
+            //            Percentage = l.Percentage,
+            //            MonthlyInstallment = l.MonthlyInstallment,
+            //            Ammount = l.Inquiry.Ammount,
+            //            Installments = l.Inquiry.Installments,
+            //            StatusId = l.StatusId,
+            //            StatusDescription = l.OfferStatus.Name,
+            //            InquiryId = l.InquiryId,
+            //            CreateDate = l.CreationDate,
+            //            UpdateDate = null,
+            //            ApprovedBy = null,
+            //            DocumentLink = l.DocumentLink,
+            //            DocumentLinkValidDate = null,
+            //            BankId = r.BankId
+            //        });
         }
 
-        public async Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user)
+        public async Task<IQueryable<Inquiry>> GetEmployeeInquiryAsync(User user)
         {
             using LichvaContext db = new();
             var usersId = db.Users.Where(x => x.Internal.Value).Select(x => x.Id);
+            return db.Inquiries.Where(x => usersId.Contains(x.UserId.Value));
+        }
 
-            return await db.Inquiries.Where(x => usersId.Contains(x.UserId.Value)).ToListAsync();
+        public async Task<OfferStatus?> CheckIdStatus(int stateId)
+        {
+            using LichvaContext db = new LichvaContext();
+            return await db.OfferStatuses.FirstOrDefaultAsync(x => x.Id == stateId);
+        }
+
+        public async Task UpdateOfferStatus(Offer offer, int newStatus)
+        {
+            using LichvaContext db = new();
+            var tmp = await db.Offers.FirstAsync(x => x.Id == offer.Id);
+
+            tmp.StatusId = newStatus;
+            await db.SaveChangesAsync();
+        }
+
+
+        public async Task<int> GetUsersCount()
+        {
+            using LichvaContext db = new();
+            return await db.Users.CountAsync();
         }
 
     }

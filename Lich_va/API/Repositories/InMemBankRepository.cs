@@ -34,6 +34,11 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<OfferStatus?> CheckIdStatus(int stateId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<OnInquiryCreationDto> CreateInquiry(CreateInquiryDto dto)
         {
             throw new NotImplementedException();
@@ -174,6 +179,11 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<GetOfferDto>> GetOffersAsync(User user, (bool IsRange, IList<int>)? idFilter = null, (bool IsRange, IList<int>)? inquiryIdFilter = null, (bool IsRange, IList<DateTime>)? createDateFilter = null, (bool IsRange, IList<decimal>)? percentageFilter = null, (bool IsRange, IList<decimal>)? monthlyInstallmentFilter = null, (bool IsRange, IList<int>)? statusFilter = null, (bool IsRange, IList<int>)? bankIdFiler = null, (bool IsRange, IList<int>)? statusIdFilter = null, (bool IsRange, IList<int>)? installmentsFilter = null, (bool IsRange, IList<int>)? requestedValueFilter = null, string? sortColumn = null, bool? sortDesc = null)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<OfferStatus>> GetOfferStatusesAsync()
         {
             throw new NotImplementedException();
@@ -239,6 +249,11 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<int> GetUsersCount()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task UpdateInquiry(UpdateInquiryDto dto)
         {
             throw new NotImplementedException();
@@ -269,6 +284,11 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
+        public Task UpdateOfferStatus(Offer offer, int newStatus)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task UpdateUser(int id, UpdateUserDto dto)
         {
             throw new NotImplementedException();
@@ -285,6 +305,31 @@ namespace API.Repositories
         }
 
         public Task UpdateUserAsync(int id, UpdateUserDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IQueryable<Inquiry>> IBankRepository.GetEmployeeInquiryAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IQueryable<GetOfferDto>> IBankRepository.GetEmployeeOffersAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<Offer>> IBankRepository.GetOffersAsync(User user, (bool IsRange, IList<int>)? idFilter, (bool IsRange, IList<int>)? inquiryIdFilter, (bool IsRange, IList<DateTime>)? createDateFilter, (bool IsRange, IList<decimal>)? percentageFilter, (bool IsRange, IList<decimal>)? monthlyInstallmentFilter, (bool IsRange, IList<int>)? statusFilter, (bool IsRange, IList<int>)? bankIdFiler, (bool IsRange, IList<int>)? statusIdFilter, (bool IsRange, IList<int>)? installmentsFilter, (bool IsRange, IList<int>)? requestedValueFilter, string? sortColumn, bool? sortDesc)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IQueryable<Inquiry>> IBankRepository.GetUserInquiriesAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IQueryable<GetOfferDto>> IBankRepository.GetUserOffersAsync(User user)
         {
             throw new NotImplementedException();
         }
