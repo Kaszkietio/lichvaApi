@@ -29,24 +29,24 @@ namespace API.Controllers
             //[FromQuery] IList<bool> internalFilter,
             //[FromQuery] IList<bool> anonymousFilter,
             //[FromQuery] IList<string> hashFilter
-            [FromQuery] string? idFilter,
-            [FromQuery] string? createDateFilter,
-            [FromQuery] string? emailFilter,
-            [FromQuery] string? roleFilter,
-            [FromQuery] string? internalFilter,
-            [FromQuery] string? anonymousFilter,
-            [FromQuery] string? hashFilter
+            [FromQuery] string idFilter,
+            [FromQuery] string createDateFilter,
+            [FromQuery] string emailFilter,
+            [FromQuery] string roleFilter,
+            [FromQuery] string internalFilter,
+            [FromQuery] string anonymousFilter,
+            [FromQuery] string hashFilter
             )
         {
             try
             {
-                var idFilterS = idFilter?.ParseInt() ?? null;
-                var createDateS = createDateFilter?.ParseDateTime() ?? null;
-                var emailS = emailFilter?.Parse() ?? null;
-                var roleS = roleFilter?.ParseInt() ?? null;
-                var internalS = internalFilter?.ParseBool() ?? null;
-                var anonymousS = anonymousFilter?.ParseBool() ?? null;
-                var hashS = hashFilter?.Parse() ?? null;
+                var idFilterS = idFilter.ParseInt();
+                var createDateS = createDateFilter.ParseDateTime();
+                var emailS = emailFilter.Parse();
+                var roleS = roleFilter.ParseInt();
+                var internalS = internalFilter.ParseBool();
+                var anonymousS = anonymousFilter.ParseBool();
+                var hashS = hashFilter.Parse();
                 await Repository.AuthenticateUserAsync(authToken);
                 return Ok(
                     (await Repository.GetUsersAsync(
