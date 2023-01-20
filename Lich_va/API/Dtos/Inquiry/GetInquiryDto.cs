@@ -4,6 +4,7 @@ namespace API.Dtos.Inquiry
 {
     public class GetInquiryDto
     {
+        public int InquiryId { get; set; }
         public DateTime? CreationDate { get; set; }
         public int? Ammount { get; set; }
         public int? Installments { get; set; }

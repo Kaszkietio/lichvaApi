@@ -72,6 +72,7 @@ namespace API.Repositories
 
         // User
         public Task<Role?> GetRoleAsync(User user);
+        public Task<User?> GetUserByOfferAsync(int offerId);
 
         public Task<IEnumerable<Offer>> GetUserOffersAsync(User user);
         public Task<IEnumerable<Inquiry>> GetUserInquiriesAsync(User user);

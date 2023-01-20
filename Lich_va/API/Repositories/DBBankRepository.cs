@@ -57,8 +57,8 @@ namespace API.Repositories
             using LichvaContext db = new();
             var result = db.Banks.AsQueryable();
             if (nameList.Count != 0)
-                result = result.Where(bank => 
-                    bank.Name != null && 
+                result = result.Where(bank =>
+                    bank.Name != null &&
                     nameList.Contains(bank.Name)
                     );
 
@@ -76,7 +76,7 @@ namespace API.Repositories
             (bool IsRange, IList<int>)? bankIdFilter = null
             )
         {
-            idFilter??= (false, new List<int>());
+            idFilter ??= (false, new List<int>());
             createDateFilter ??= (false, new List<DateTime>());
             ammountFilter ??= (false, new List<int>());
             installmentFilter ??= (false, new List<int>());
@@ -102,7 +102,7 @@ namespace API.Repositories
                 .Include(x => x.ForeignInquiry)
                 .AsQueryable();
 
-            if(user.RoleId != (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
+            if (user.RoleId != (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
                 result = result.Where(x => x.UserId == user.Id);
 
 
@@ -122,7 +122,7 @@ namespace API.Repositories
                 );
             else if (createDateFilter.arr.Count != 0)
                 result = result.Where(inq =>
-                    inq.CreationDate.HasValue && 
+                    inq.CreationDate.HasValue &&
                     createDateFilter.arr.Contains(inq.CreationDate.Value)
                 );
 
@@ -142,7 +142,7 @@ namespace API.Repositories
                 );
             else if (installmentFilter.arr.Count != 0)
                 result = result.Where(inq =>
-                    inq.Installments.HasValue && 
+                    inq.Installments.HasValue &&
                     installmentFilter.arr.Contains(inq.Installments.Value)
                 );
 
@@ -178,10 +178,10 @@ namespace API.Repositories
 
             Inquiry inquiry = new Inquiry
             {
-                 CreationDate = DateTime.Now,
-                 UserId = userId,
-                 Ammount = dto.Value,
-                 Installments = dto.InstallmentsNumber,
+                CreationDate = DateTime.Now,
+                UserId = userId,
+                Ammount = dto.Value,
+                Installments = dto.InstallmentsNumber,
             };
 
             await db.Inquiries.AddAsync(inquiry);
@@ -239,9 +239,9 @@ namespace API.Repositories
             //bool? sortDesc = null
             )
         {
-            idFilter??= (false, new List<int>());
+            idFilter ??= (false, new List<int>());
             inquiryIdFilter ??= (false, new List<int>());
-            createDateFilter??= (false, new List<DateTime>());
+            createDateFilter ??= (false, new List<DateTime>());
             percentageFilter ??= (false, new List<decimal>());
             monthlyInstallmentFilter ??= (false, new List<decimal>());
             statusFilter ??= (false, new List<int>());
@@ -273,37 +273,37 @@ namespace API.Repositories
                 .Include(x => x.OfferStatus)
                 .AsQueryable();
 
-            if(user.RoleId != (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
+            if (user.RoleId != (await db.Roles.FirstAsync(x => x.Name == "employee")).Id)
                 result = result.Where(x => x.Inquiry.UserId == user.Id);
 
             if (idFilter.IsRange)
                 result = result.Where(x => idFilter.arr.First() <= x.Id && x.Id <= idFilter.arr.Last());
-            else if(idFilter.arr.Count != 0)
+            else if (idFilter.arr.Count != 0)
                 result = result.Where(x => idFilter.arr.Contains(x.Id));
 
             if (inquiryIdFilter.IsRange)
                 result = result.Where(x => inquiryIdFilter.arr.First() <= x.InquiryId && x.InquiryId <= inquiryIdFilter.arr.Last());
-            else if(inquiryIdFilter.arr.Count != 0)
+            else if (inquiryIdFilter.arr.Count != 0)
                 result = result.Where(x => x.InquiryId.HasValue && inquiryIdFilter.arr.Contains(x.InquiryId.Value));
 
             if (createDateFilter.IsRange)
                 result = result.Where(x => createDateFilter.arr.First() <= x.CreationDate && x.CreationDate <= createDateFilter.arr.Last());
-            else if(createDateFilter.arr.Count != 0)
+            else if (createDateFilter.arr.Count != 0)
                 result = result.Where(x => x.CreationDate.HasValue && createDateFilter.arr.Contains(x.CreationDate.Value));
 
             if (percentageFilter.IsRange)
                 result = result.Where(x => percentageFilter.arr.First() <= x.Percentage && x.Percentage <= percentageFilter.arr.Last());
-            else if(percentageFilter.arr.Count != 0)
+            else if (percentageFilter.arr.Count != 0)
                 result = result.Where(x => x.Percentage.HasValue && percentageFilter.arr.Contains(x.Percentage.Value));
-            
+
             if (monthlyInstallmentFilter.IsRange)
                 result = result.Where(x => monthlyInstallmentFilter.arr.First() <= x.MonthlyInstallment && x.MonthlyInstallment <= monthlyInstallmentFilter.arr.Last());
-            else if(monthlyInstallmentFilter.arr.Count != 0)
+            else if (monthlyInstallmentFilter.arr.Count != 0)
                 result = result.Where(x => x.MonthlyInstallment.HasValue && monthlyInstallmentFilter.arr.Contains(x.MonthlyInstallment.Value));
 
             if (statusFilter.IsRange)
                 result = result.Where(x => statusFilter.arr.First() <= x.StatusId && x.StatusId <= statusFilter.arr.Last());
-            else if(statusFilter.arr.Count != 0)
+            else if (statusFilter.arr.Count != 0)
                 result = result.Where(x => x.StatusId.HasValue && statusFilter.arr.Contains(x.StatusId.Value));
 
 
@@ -360,7 +360,7 @@ namespace API.Repositories
 
             bool isPropValid = false;
 
-            if(dto.Active.HasValue && dto.Active.Value)
+            if (dto.Active.HasValue && dto.Active.Value)
             {
                 // Check if valid jobTypeId
                 isPropValid = await db.JobTypes.AnyAsync(x => x.Id == dto.JobTypeId);
@@ -390,7 +390,7 @@ namespace API.Repositories
                 RoleId = dto.RoleId,
                 Hash = dto.Email,
                 Internal = dto.Active,
-                Anonymous= dto.Anonymous,
+                Anonymous = dto.Anonymous,
                 Email = dto.Email,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
@@ -405,11 +405,11 @@ namespace API.Repositories
             return user.AsOnCreationDto();
         }
         public async Task<IEnumerable<User>> GetUsersAsync(
-            (bool IsRange, IList<int>)? idFilter = null, 
-            (bool IsRange, IList<DateTime>)? createDateFilter = null, 
-            (bool IsRange, IList<int>)? roleFilter = null, 
-            (bool IsRange, IList<bool>)? internalFilter = null, 
-            (bool IsRange, IList<bool>)? anonymousFilter = null, 
+            (bool IsRange, IList<int>)? idFilter = null,
+            (bool IsRange, IList<DateTime>)? createDateFilter = null,
+            (bool IsRange, IList<int>)? roleFilter = null,
+            (bool IsRange, IList<bool>)? internalFilter = null,
+            (bool IsRange, IList<bool>)? anonymousFilter = null,
             (bool IsRange, IList<string>)? emailFilter = null,
             (bool IsRange, IList<string>)? hashFilter = null
             )
@@ -443,7 +443,7 @@ namespace API.Repositories
                 result = result.Where(x => idFilter.arr.First() <= x.Id && x.Id <= idFilter.arr.Last());
             else if (idFilter.arr.Count != 0)
                 result = result.Where(x => idFilter.arr.Contains(x.Id));
-            
+
             if (createDateFilter.IsRange)
                 result = result.Where(x => createDateFilter.arr.First() <= x.CreationDate && x.CreationDate <= createDateFilter.arr.Last());
             else if (createDateFilter.arr.Count != 0)
@@ -497,8 +497,8 @@ namespace API.Repositories
             using LichvaContext db = new();
 
             // Check if user exists
-            User? user = await db.Users.FirstOrDefaultAsync(x => x.Id == id); 
-            if(user == null)
+            User? user = await db.Users.FirstOrDefaultAsync(x => x.Id == id);
+            if (user == null)
             {
                 throw new InvalidDataException("Invalid user id");
             }
@@ -507,21 +507,21 @@ namespace API.Repositories
             bool isPropValid = false;
             // Check if valid jobTypeId
             isPropValid = await db.JobTypes.AnyAsync(x => x.Id == dto.JobTypeId);
-            if(!isPropValid)
+            if (!isPropValid)
             {
                 throw new InvalidDataException("Invalid job type id");
             }
 
             // Check if valid IdTypeId
             isPropValid = await db.IdTypes.AnyAsync(x => x.Id == dto.IdTypeId);
-            if(!isPropValid)
+            if (!isPropValid)
             {
                 throw new InvalidDataException("Invalid id type id");
             }
 
             // Check if valid IdTypeId
             isPropValid = await db.Roles.AnyAsync(x => x.Id == dto.RoleId);
-            if(!isPropValid)
+            if (!isPropValid)
             {
                 throw new InvalidDataException("Invalid role id");
             }
@@ -540,7 +540,7 @@ namespace API.Repositories
             string userHash = Security.Decrypt(AppSettings.Instance.HashKey, authToken);
 
             User? user = await db.Users.FirstOrDefaultAsync(x => x.Hash == userHash);
-            if(user == null)
+            if (user == null)
             {
                 throw new InvalidDataException("Invalid authentication token");
             }
@@ -629,7 +629,18 @@ namespace API.Repositories
                             .Where(x => x.InquiryId == inquiryId)
                             .Where(x => x.Inquiry.UserId == user.Id)
                             .ToListAsync();
-        }           
+        }
+        public async Task<User?> GetUserByOfferAsync(int offerId)
+        {
+            using LichvaContext db = new();
+            var offer = await db.Offers.Include(x => x.Inquiry)
+                                       .ThenInclude(x => x.User)
+                                       .FirstOrDefaultAsync(x => x.Id == offerId);
+            if (offer == null)
+                return null;
+
+            return offer.Inquiry.User;
+        }
 
     }
 }

@@ -20,7 +20,10 @@ namespace API.Controllers
         [HttpGet]
         [Route("inquiries")]
         public async Task<ActionResult<IEnumerable<GetInquiryDto>>> GetEmployeeInquiries(
-            [FromHeader] string authToken
+            [FromHeader] string authToken,
+            [FromQuery] string? creationDateFilter,
+            [FromQuery] string? ammountFilter,
+            [FromQuery] string? installmentsFilter
             )
         {
             User? user = await Repository.AuthenticateUserAsync(authToken);
@@ -34,7 +37,9 @@ namespace API.Controllers
 
 
             var offers = await Repository.GetEmployeeInquiryAsync(user);
-            return Ok(offers.Select(x => x.AsGetDto()));
+            var tmp = offers.Select(x => x.AsGetDto());
+            var result = tmp.FilterInquiries(creationDateFilter, ammountFilter, installmentsFilter);
+            return Ok(result);
         }
 
         [HttpGet]
