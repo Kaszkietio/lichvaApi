@@ -73,12 +73,12 @@ namespace API.Repositories
         // User
         public Task<Role?> GetRoleAsync(User user);
 
-        public Task<IQueryable<GetOfferDto>> GetUserOffersAsync(User user);
-        public Task<IQueryable<Inquiry>> GetUserInquiriesAsync(User user);
+        public Task<IEnumerable<GetOfferDto>> GetUserOffersAsync(User user);
+        public Task<IEnumerable<Inquiry>> GetUserInquiriesAsync(User user);
 
         // EMPLOYEE
-        public Task<IQueryable<GetOfferDto>> GetEmployeeOffersAsync(User user);
-        public Task<IQueryable<Inquiry>> GetEmployeeInquiryAsync(User user);
+        public Task<IEnumerable<GetOfferDto>> GetEmployeeOffersAsync(User user);
+        public Task<IEnumerable<Inquiry>> GetEmployeeInquiryAsync(User user);
 
 
         // Helpers

@@ -309,12 +309,12 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
-        Task<IQueryable<Inquiry>> IBankRepository.GetEmployeeInquiryAsync(User user)
+        Task<IEnumerable<Inquiry>> IBankRepository.GetEmployeeInquiryAsync(User user)
         {
             throw new NotImplementedException();
         }
 
-        Task<IQueryable<GetOfferDto>> IBankRepository.GetEmployeeOffersAsync(User user)
+        Task<IEnumerable<GetOfferDto>> IBankRepository.GetEmployeeOffersAsync(User user)
         {
             throw new NotImplementedException();
         }
@@ -324,12 +324,12 @@ namespace API.Repositories
             throw new NotImplementedException();
         }
 
-        Task<IQueryable<Inquiry>> IBankRepository.GetUserInquiriesAsync(User user)
+        Task<IEnumerable<Inquiry>> IBankRepository.GetUserInquiriesAsync(User user)
         {
             throw new NotImplementedException();
         }
 
-        Task<IQueryable<GetOfferDto>> IBankRepository.GetUserOffersAsync(User user)
+        Task<IEnumerable<GetOfferDto>> IBankRepository.GetUserOffersAsync(User user)
         {
             throw new NotImplementedException();
         }

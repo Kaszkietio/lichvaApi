@@ -65,21 +65,21 @@ namespace API.Controllers
             [FromQuery] string? createDateFilter,
             [FromQuery] string? percentageFilter,
             [FromQuery] string? monthlyInstallmentFilter,
-            [FromQuery] string? statusFilter,
-            [FromQuery] string? sortColumn,
-            [FromQuery] bool? sortDescending
+            [FromQuery] string? statusFilter
+            //[FromQuery] string? sortColumn,
+            //[FromQuery] bool? sortDescending
             )
         {
             try
             {
                 User user = await Repository.AuthenticateUserAsync(authToken);
                 var result = await Repository.GetOffersAsync(user,
-                    idFilter.ParseInt(),
-                    inquiryIdFilter.ParseInt(),
-                    createDateFilter.ParseDateTime(),
-                    percentageFilter.ParseDecimal(),
-                    monthlyInstallmentFilter.ParseDecimal(),
-                    statusFilter.ParseInt()
+                    idFilter?.ParseInt() ?? null,
+                    inquiryIdFilter?.ParseInt() ?? null,
+                    createDateFilter?.ParseDateTime() ?? null,
+                    percentageFilter?.ParseDecimal() ?? null,
+                    monthlyInstallmentFilter?.ParseDecimal() ?? null,
+                    statusFilter?.ParseInt() ?? null
                     );
 
                 return Ok(result.Select(x => x.AsGetDto()));

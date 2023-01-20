@@ -5,6 +5,7 @@ using API.Repositories;
 using BankDataLibrary.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,13 +40,13 @@ namespace API.Controllers
         {
             try
             {
-                var idFilterS = idFilter.ParseInt();
-                var createDateS = createDateFilter.ParseDateTime();
-                var emailS = emailFilter.Parse();
-                var roleS = roleFilter.ParseInt();
-                var internalS = internalFilter.ParseBool();
-                var anonymousS = anonymousFilter.ParseBool();
-                var hashS = hashFilter.Parse();
+                var idFilterS = idFilter?.ParseInt() ?? null;
+                var createDateS = createDateFilter?.ParseDateTime() ?? null;
+                var emailS = emailFilter?.Parse() ?? null;
+                var roleS = roleFilter?.ParseInt() ?? null;
+                var internalS = internalFilter?.ParseBool() ?? null;
+                var anonymousS = anonymousFilter?.ParseBool() ?? null;
+                var hashS = hashFilter?.Parse() ?? null;
                 await Repository.AuthenticateUserAsync(authToken);
                 return Ok(
                     (await Repository.GetUsersAsync(
@@ -111,6 +112,7 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("offers")]
+        [DisableCors]
         public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetOffersLichvaAsync(
             [FromHeader] string authToken,
             [FromQuery] string? creationDateFilter,
