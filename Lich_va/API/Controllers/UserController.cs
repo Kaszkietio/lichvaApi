@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace API.Controllers
 {
@@ -87,7 +88,10 @@ namespace API.Controllers
         [HttpGet]
         [Route("inquiries")]
         public async Task<ActionResult<IEnumerable<GetInquiryDto>>> GetInquiriesAsync(
-            [FromHeader] string authToken
+            [FromHeader] string authToken,
+            [FromQuery] string? creationDate,
+            [FromQuery] string? ammount,
+            [FromQuery] string? installments
             )
         {
             User? user = await Repository.AuthenticateUserAsync(authToken);
@@ -102,13 +106,21 @@ namespace API.Controllers
 
             var offers = await Repository.GetUserInquiriesAsync(user);
 
+            
             return Ok(offers.Select(x => x.AsGetDto()));
         }
 
         [HttpGet]
         [Route("offers")]
         public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetOffersLichvaAsync(
-            [FromHeader] string authToken
+            [FromHeader] string authToken,
+            [FromQuery] string? creationDateFilter,
+            [FromQuery] string? requestedValueFilter,
+            [FromQuery] string? installmentsFilter,
+            [FromQuery] string? percentageFilter,
+            [FromQuery] string? monthlyInstallmentsFilter,
+            [FromQuery] string? bankIdFilter,
+            [FromQuery] string? statusIdFitler
             )
         {
             User? user = await Repository.AuthenticateUserAsync(authToken);
@@ -123,7 +135,20 @@ namespace API.Controllers
 
             var offers = await Repository.GetUserOffersAsync(user);
 
-            return Ok(offers.Select(x => x.AsGetDto()));
+            var result = offers.FilterOffers(creationDateFilter, requestedValueFilter, installmentsFilter, percentageFilter, monthlyInstallmentsFilter, bankIdFilter, statusIdFitler);
+
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("count")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetUserCount()
+        {
+            int count = await Repository.GetUsersCount();
+
+            return Ok(new { count });
         }
     }
 }

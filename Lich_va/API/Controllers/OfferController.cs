@@ -65,7 +65,9 @@ namespace API.Controllers
             [FromQuery] string? createDateFilter,
             [FromQuery] string? percentageFilter,
             [FromQuery] string? monthlyInstallmentFilter,
-            [FromQuery] string? statusFilter
+            [FromQuery] string? statusFilter,
+            [FromQuery] string? sortColumn,
+            [FromQuery] bool? sortDescending
             )
         {
             try
@@ -173,6 +175,38 @@ namespace API.Controllers
             catch ( Exception ex )
             {
                 return StatusCode(500, new { ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Route("{offerId}/updateStatus")]
+        public async Task<ActionResult> UpdateOfferStatusAsync(
+            [FromHeader] string authToken,
+            int offerId,
+            int newStateId
+            )
+        {
+            try
+            {
+                User? user = await Repository.AuthenticateUserAsync(authToken);
+                if (user == null)
+                    return Unauthorized();
+
+                OfferStatus? offerStatus = await Repository.CheckIdStatus(newStateId);
+                if (offerStatus == null)
+                    return BadRequest(new { message = "Wrong offer status"});
+
+                Offer? offer = (await Repository.GetOffersAsync(user)).FirstOrDefault(x => x.Id == offerId);
+                if (offer == null)
+                    return NotFound();
+
+                await Repository.UpdateOfferStatus(offer, newStateId);
+
+                return Ok();
+            }
+            catch(Exception ex )
+            {
+                return StatusCode(500, new {ex.Message});
             }
         }
     }
