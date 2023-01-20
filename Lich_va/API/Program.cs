@@ -5,6 +5,10 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Text;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using BankDataLibrary.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 string json = File.ReadAllText(@"appsettings.json");
 JObject o = JObject.Parse(@json);
 AppSettings.Instance = JsonConvert.DeserializeObject<AppSettings>(o["AppSettings"].ToString());
-
+AppSettings.Instance.FunnyLittleString = UTF8Encoding.UTF8.GetString(Convert.FromBase64String(AppSettings.Instance.FunnyLittleString));
+LichvaContext.ConnectionString = AppSettings.Instance.LichvaConnectionString;
 
 builder.Services.AddCors(opts =>
 {
@@ -45,18 +50,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddSingleton<IBankRepository, DBBankRepository>();
 builder.Services.AddSingleton<IBankRepository, DBBankRepository>();
 
 var app = builder.Build();
 
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-//}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 
 app.UseRouting();
