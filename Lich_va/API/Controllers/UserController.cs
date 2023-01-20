@@ -112,7 +112,6 @@ namespace API.Controllers
 
         [HttpGet]
         [Route("offers")]
-        [DisableCors]
         public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetOffersLichvaAsync(
             [FromHeader] string authToken
             //[FromQuery] string? creationDateFilter,
