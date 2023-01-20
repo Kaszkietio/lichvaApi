@@ -60,12 +60,12 @@ namespace API.Controllers
             //[FromQuery] IList<decimal> percentageFilter,
             //[FromQuery] IList<decimal> monthlyInstallmentFilter,
             //[FromQuery] IList<int> statusFilter
-            [FromQuery] string? idFilter,
-            [FromQuery] string? inquiryIdFilter,
-            [FromQuery] string? createDateFilter,
-            [FromQuery] string? percentageFilter,
-            [FromQuery] string? monthlyInstallmentFilter,
-            [FromQuery] string? statusFilter
+            [FromQuery] string idFilter,
+            [FromQuery] string inquiryIdFilter,
+            [FromQuery] string createDateFilter,
+            [FromQuery] string percentageFilter,
+            [FromQuery] string monthlyInstallmentFilter,
+            [FromQuery] string statusFilter
             //[FromQuery] string? sortColumn,
             //[FromQuery] bool? sortDescending
             )
@@ -74,12 +74,12 @@ namespace API.Controllers
             {
                 User user = await Repository.AuthenticateUserAsync(authToken);
                 var result = await Repository.GetOffersAsync(user,
-                    idFilter?.ParseInt() ?? null,
-                    inquiryIdFilter?.ParseInt() ?? null,
-                    createDateFilter?.ParseDateTime() ?? null,
-                    percentageFilter?.ParseDecimal() ?? null,
-                    monthlyInstallmentFilter?.ParseDecimal() ?? null,
-                    statusFilter?.ParseInt() ?? null
+                    idFilter.ParseInt(),
+                    inquiryIdFilter.ParseInt(),
+                    createDateFilter.ParseDateTime(),
+                    percentageFilter.ParseDecimal(),
+                    monthlyInstallmentFilter.ParseDecimal(),
+                    statusFilter.ParseInt()
                     );
 
                 return Ok(result.Select(x => x.AsGetDto()));
