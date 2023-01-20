@@ -11,7 +11,8 @@ namespace BankDataLibrary.Config
 {
     public class LichvaContext : DbContext
     {
-        private static string _connectionString = "Server = tcp:lichvadbserver.database.windows.net,1433;Initial Catalog = lichvaDB;Persist Security Info=False;User ID = APIuser;Password=\"kurwodzialaj3!\";MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;";
+        //private static string _connectionString = "Server = tcp:lichvadbserver.database.windows.net,1433;Initial Catalog = lichvaDB;Persist Security Info=False;User ID = APIuser;Password=\"kurwodzialaj3!\";MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout = 30;";
+        private static string _connectionString = "";
         public static string ConnectionString { get => _connectionString; set => _connectionString = value; }
 
         public const string SchemaName = "dbo";

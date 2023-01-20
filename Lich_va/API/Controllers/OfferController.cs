@@ -66,45 +66,6 @@ namespace API.Controllers
             return Ok(offers.Select(x => x.AsGetDto()));
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<GetOfferDto>>> GetAllAsync(
-        //    [FromHeader] string authToken,
-        //    //[FromQuery] IList<int> idFilter,
-        //    //[FromQuery] IList<int> inquiryIdFilter,
-        //    //[FromQuery] IList<DateTime> createDateFilter,
-        //    //[FromQuery] IList<decimal> percentageFilter,
-        //    //[FromQuery] IList<decimal> monthlyInstallmentFilter,
-        //    //[FromQuery] IList<int> statusFilter
-        //    [FromQuery] string? idFilter,
-        //    [FromQuery] string? inquiryIdFilter,
-        //    [FromQuery] string? createDateFilter,
-        //    [FromQuery] string? percentageFilter,
-        //    [FromQuery] string? monthlyInstallmentFilter,
-        //    [FromQuery] string? statusFilter
-        //    //[FromQuery] string? sortColumn,
-        //    //[FromQuery] bool? sortDescending
-        //    )
-        //{
-        //    try
-        //    {
-        //        User user = await Repository.AuthenticateUserAsync(authToken);
-        //        var result = await Repository.GetOffersAsync(user,
-        //            idFilter.ParseInt(),
-        //            inquiryIdFilter.ParseInt(),
-        //            createDateFilter.ParseDateTime(),
-        //            percentageFilter.ParseDecimal(),
-        //            monthlyInstallmentFilter.ParseDecimal(),
-        //            statusFilter.ParseInt()
-        //            );
-
-        //        return Ok(result.Select(x => x.AsGetDto()));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { ex.Message });
-        //    }
-        //}
-
         [HttpPost]
         [Route("{offerId}/document/upload")]
         public async Task<ActionResult> UploadDocument(
@@ -216,6 +177,7 @@ namespace API.Controllers
 
                 await Repository.UpdateOfferStatus(offer, newStateId);
 
+                EmailSender.SendEmail(user);
                 return Ok();
             }
             catch (Exception ex)
